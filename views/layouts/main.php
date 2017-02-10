@@ -3,12 +3,13 @@
 /* @var $content string */
 
 use yii\helpers\Html;
-use yii\widgets\Breadcrumbs;
-use app\assets\AppAsset;
+use app\assets\LteAsset;
 use yii\helpers\Url;
-use kartik\sidenav\SideNav;
+use yii\bootstrap\Modal;
+use app\models\GacEntityListU;
+use yii\widgets\Breadcrumbs;
 
-AppAsset::register($this);
+LteAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -19,20 +20,58 @@ AppAsset::register($this);
         <?= Html::csrfMetaTags() ?>
         <title><?= Html::encode($this->title) ?></title>
         <?php $this->head() ?>
-        <!-- <link rel="stylesheet" type="text/css" href="../web/css/modified-styles.css"> -->
     </head>
+    <!--    <body class="skin-blue sidebar-mini">-->
     <body class="skin-blue sidebar-mini">
         <?php $this->beginBody() ?>
+
+        <!-- Start of report parameters modal pop up -->
+        <?php
+        Modal::begin([
+            'header' => '<h4>Report Parameters</h4>',
+            'id' => 'modalReportParameters',
+            'size' => 'modal-md'
+        ]);
+        Modal::end();
+
+        Modal::begin([
+            'header' => '<h4>Consolidation Status</h4>',
+            'id' => 'modalConsolidationStatus',
+            'size' => 'modal-md'
+        ]);
+        Modal::end();
+
+        Modal::begin([
+            'header' => '<h4>Entity List</h4>',
+            'id' => 'modalEntityList',
+            'size' => 'modal-md'
+        ]);
+        Modal::end();
+
+        Modal::begin([
+            'header' => '<h4>GFS List</h4>',
+            'id' => 'modalGfsList',
+            'size' => 'modal-md'
+        ]);
+        Modal::end();
+
+        Modal::begin([
+            'header' => '<h4>Report Parameters</h4>',
+            'id' => 'modalSegmentedReports',
+            'size' => 'modal-md'
+        ]);
+        Modal::end();
+        ?>
 
         <div class="wrapper">
 
             <header class="main-header">
                 <!-- Logo -->
-                <a href="index.php?r=site" class="logo">
+                <a href="index.php" class="logo">
                     <!-- mini logo for sidebar mini 50x50 pixels -->
-                    <span class="logo-mini"><b>GAC</b>System</span>
+                    <span class="logo-mini"><b>GACS</b></span>
                     <!-- logo for regular state and mobile devices -->
-                    <span class="logo-lg"><b>GAC </b>System</span>
+                    <span class="logo-lg"><b>GAC</b> System v2.1</span>
                 </a>
                 <!-- Header Navbar: style can be found in header.less -->
                 <nav class="navbar navbar-static-top">
@@ -43,110 +82,158 @@ AppAsset::register($this);
 
                     <div class="navbar-custom-menu">
                         <ul class="nav navbar-nav">
-                            <!-- Messages: style can be found in dropdown.less-->
-                            <li class="dropdown messages-menu">
-                            </li>
-                            <li class="dropdown messages-menu">
-                            </li>
-                            <!-- User Account: style can be found in dropdown.less -->
-                            <li class="dropdown user user-menu">
-                                <?php
-                                if (Yii::$app->user->isGuest) {
-                                    echo '<li><a href="' . Url::to(['/site/login']) . '">Login</a></li>';
-                                } else {
-                                    echo '<li><a href="' . Url::to(['/site/logout']) . '">Logout(' . Yii::$app->user->identity->username . ')</a></li>';
-                                }
-                                ?>
-                                </a>
-                            </li>
+                            <?php
+                            echo '<li><a href="../web/docs/About GACS v2.1.pdf" target="blank">About System</a></li>';
+                            ?>
+                            <?php
+                            echo '<li><a href="../web/docs/GACS User Guide.pdf" target="blank">Help</a></li>';
+                            ?>
+                            <?php
+                            echo '<li><a href="#">Institution: ' .
+                            GacEntityListU::getEntityDesc(Yii::$app->user->identity->institutional_code)
+                            . '</a></li>';
+                            ?>
+                            <?php
+                            if (Yii::$app->user->isGuest) {
+                                echo '<li><a href="' . Url::to(['/site/login']) . '">Login</a></li>';
+                            } else {
+                                echo '<li><a href="' . Url::to(['/site/logout']) . '">Logout(' . Yii::$app->user->identity->getFullName() . ')</a></li>';
+                            }
+                            ?>
                         </ul>
                     </div>
                 </nav>
             </header>
-
             <!-- Left side column. contains the logo and sidebar -->
-            <aside class="main-sidebar" style="background-color:#F7F7F7">
-
+            <aside class="main-sidebar">
                 <!-- sidebar: style can be found in sidebar.less -->
                 <section class="sidebar">
                     <!-- sidebar menu: : style can be found in sidebar.less -->
                     <ul class="sidebar-menu">
+                        <li class="header">MAIN NAVIGATION</li>
+                        <li>
+                            <a href="index.php">
+                                <i class="fa fa-dashboard"></i> 
+                                <span>Home</span>
+                            </a>
+                        </li>
                         <?php
-                        echo SideNav::widget([
-                            'type' => 'Primary',
-                            'encodeLabels' => false,
-                            'heading' => 'Main Menu',
-                            'items' => [
-                                [
-                                    'label' => 'Home',
-                                    'icon' => 'glyphicon glyphicon-home',
-                                    'url' => Url::to(['/site/index']),
-                                    'active' => (Yii::$app->controller->id == 'site'),
-                                ],
-                                [
-                                    'label' => 'General Operation',
-                                    'icon' => 'glyphicon glyphicon-briefcase',
-                                    'url' => Url::to(['/gac-data-trxdet-u/index']),
-                                    'active' => (Yii::$app->controller->id == 'gac-data-trxdet-u'),
-//                                    'visible' => Yii::$app->user->can('admin'),
-                                ],
-                                [
-                                    'label' => 'Consolidation',
-                                    'icon' => 'glyphicon glyphicon-compressed',
-                                    'url' => Url::to(['/gac-data-trx-v/index']),
-                                    'active' => (Yii::$app->controller->id == 'gac-data-trx-v'),
-                                    'visible' => Yii::$app->user->can('consolidator'),
-                                ],
-                                [
-                                    'label' => 'Reports',
-                                    'icon' => 'glyphicon glyphicon-signal',
-//                                    'visible' => Yii::$app->user->can('admin'),
-                                    'items' => [
-                                        ['label' => 'Statement of Financial Performance', 'url' => Url::to(['/report/financial-performance']), 'active' => (yii::$app->controller->id == 'report'),
-                                        ],
-                                        ['label' => 'Statement of Financial Position', 'url' => Url::to(['/report/financial-position']), 'active' => ((yii::$app->controller->id) == 'report'),
-                                        ],
-                                        ['label' => 'Changes in Equity', 'url' => Url::to(['/report/changes-in-equity']), 'active' => (yii::$app->controller->id == 'report'),
-                                        ],
-                                        ['label' => 'Cashflow Statement', 'url' => Url::to(['/report/cash-flow-statement']), 'active' => ((yii::$app->controller->id) == 'report'),
-                                        ],
-                                        ['label' => 'Comparison of Budget vs Actual', 'url' => Url::to(['/report/budget-vs-actual']), 'active' => ((yii::$app->controller->id) == 'report'),
-                                        ],
-                                    ]
-                                ],
-                                [
-                                    'label' => 'Setup',
-                                    'icon' => 'glyphicon glyphicon-cog',
-//                                    'visible' => Yii::$app->user->can('admin'),
-                                    'items' => [
-                                        ['label' => 'Global Period', 'url' => Url::to(['/gac-glob-period-u']), 'active' => (yii::$app->controller->id == 'gac-glob-period-u'),
-                                        ],
-                                        ['label' => 'GFS Management', 'url' => Url::to(['/gac-gfs-list-u']), 'active' => (yii::$app->controller->id == 'gac-gfs-list-u'),
-                                        ],
-                                        ['label' => 'Entity Management', 'url' => Url::to(['/gac-entity-list-u']), 'active' => (yii::$app->controller->id == 'gac-entity-list-u'),
-                                        ],
-                                        ['label' => 'Reports Management i.e Range', 'url' => Url::to(['/gac-note-itemranges-u']), 'active' => (yii::$app->controller->id == 'gac-note-itemranges-u'),
-                                        ],
-                                    ]],
-                                [
-                                    'label' => 'System Security',
-                                    'icon' => 'glyphicon glyphicon-lock',
-//                                    'visible' => Yii::$app->user->can('admin'),
-                                    'items' => [
-                                        ['label' => 'User Management', 'url' => Url::to(['/user/index']), 'active' => (yii::$app->controller->id == 'user'),
-                                        ],
-                                        ['label' => 'Roles', 'url' => Url::to(['/admin/role']), 'active' => ((yii::$app->controller->id) == 'role'),
-                                        ],
-                                        ['label' => 'Permission', 'url' => Url::to(['/admin/permission']), 'active' => ((yii::$app->controller->id) == 'permission'),
-                                        ],
-                                        ['label' => 'Routes', 'url' => Url::to(['/admin/route']), 'active' => ((yii::$app->controller->id) == 'route' ),
-                                        ],
-                                    ]],
-                            ],
-                        ]);
+                        if (Yii::$app->user->can('user') || Yii::$app->user->can('developer')) {
+                            echo '<li><a href="' . Url::to(['/gac-data-trxdet-u']) . '">'
+                            . '<i class="fa fa-files-o"></i>'
+                            . '<span>General Operation</span>'
+                            . '</a></li>';
+                        }
+                        ?>
+
+                        <?php
+                        if (Yii::$app->user->can('consolidator') || Yii::$app->user->can('developer')) {
+                            echo '<li><a href="' . Url::to(['/gac-data-trx-v']) . '">
+                            <i class="fa fa-th"></i>
+                            <span>Consolidation</span>
+                            </a></li>';
+                        }
+                        ?>
+
+                        <?php
+                        if (Yii::$app->user->can('user') ||
+                                Yii::$app->user->can('report viewer') ||
+                                Yii::$app->user->can('consolidator') ||
+                                Yii::$app->user->can('developer')) {
+                            echo '<li class = "treeview">
+                            <a href = "#">
+                            <i class = "fa fa-pie-chart"></i>
+                            <span>Reports</span>
+                            <span class = "pull-right-container">
+                            <i class = "fa fa-angle-left pull-right"></i>
+                            </span>
+                            </a>
+                            <ul class = "treeview-menu">
+                            <li class="btnTrialBalance"><a href = "#"><i class = "fa fa-circle-o"></i>
+                            Trial Balance</a></li> 
+                            <li class="btnFinancialStmt"><a href = "#"><i class = "fa fa-circle-o"></i>
+                            Financial Performance</a></li>
+                            <li class="btnFinancialPosition"><a href = "#"><i class = "fa fa-circle-o"></i>
+                            Financial Position</a></li>
+                            <li class="btnCashFlowStmt"><a href = "#"><i class = "fa fa-circle-o"></i>
+                            Cashflow Statement</a></li>
+                            <li class="btnChangesInEquity"><a href = "#"><i class = "fa fa-circle-o"></i>
+                            Changes in Equity</a></li>
+                            <li class="btnBudgetVsActual"><a href = "#"><i class = "fa fa-circle-o"></i>
+                            Budget vs Actual</a></li>                                                    
+                            <li class="btnNotes"><a href = "#"><i class = "fa fa-circle-o"></i>
+                            Notes</a></li>';
+
+                            if (Yii::$app->user->can('consolidator') ||
+                                    Yii::$app->user->can('developer')) {
+                                echo '<li class="btnSegFinancialPerformance"><a href = "#"><i class = "fa fa-circle-o"></i>
+                            Segmented Performance</a></li>
+                            <li class="btnSegFinancialPosition"><a href = "#"><i class = "fa fa-circle-o"></i>
+                            Segmented Position</a></li>
+                            <li class="btnSegCashFlowStmt"><a href = "#"><i class = "fa fa-circle-o"></i>
+                            Segmented Cash Flow</a></li>
+                            <li class="btnConsoStatus"><a href = "#"><i class = "fa fa-circle-o"></i>
+                            Consolidation Status</a></li>
+                            <li class="btnEntityList"><a href = "#"><i class = "fa fa-circle-o"></i>
+                            Entity List</a></li>
+                            <li class="btnGFSList"><a href = "#"><i class = "fa fa-circle-o"></i>
+                            GFS List</a></li>';
+                            }
+
+                            echo '}';
+                            echo '</ul>';
+                            echo '</li>';
+                        }
+                        ?>
+
+
+                        <?php
+                        if (Yii::$app->user->can('admin') || Yii::$app->user->can('developer')) {
+                            echo '<li class="treeview">
+                            <a href="#">
+                                <i class="fa fa-laptop"></i>
+                                <span>Setup</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="index.php?r=gac-glob-period-u"><i class="fa fa-circle-o"></i>
+                                        Global Period</a></li>
+                                <li><a href="index.php?r=gac-gfs-list-u"><i class="fa fa-circle-o"></i> 
+                                        GFS Management</a></li>
+                                <li><a href="index.php?r=gac-entity-list-u"><i class="fa fa-circle-o"></i>
+                                        Entity Management</a></li>
+                                <li><a href="index.php?r=gac-note-itemranges-u"><i class="fa fa-circle-o"></i>
+                                        Reports Management i.e Range</a></li>                
+                            </ul>
+                        </li>';
+                        }
+                        ?>
+
+                        <?php
+                        if (Yii::$app->user->can('admin') || Yii::$app->user->can('developer')) {
+                            echo '<li class="treeview">
+                            <a href="#">
+                                <i class="fa fa-edit"></i> <span>System Security</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="index.php?r=user/index"><i class="fa fa-circle-o"></i>
+                                        User Management</a></li>
+                                <li><a href="index.php?r=admin/role"><i class="fa fa-circle-o"></i> 
+                                        Roles</a></li>
+                                <li><a href="index.php?r=admin/permission"><i class="fa fa-circle-o"></i>
+                                        Permission</a></li>
+                                <li><a href="index.php?r=admin/route"><i class="fa fa-circle-o"></i>
+                                        Routes</a></li>
+                            </ul>
+                        </li>';
+                        }
                         ?>
                     </ul>
-
                 </section>
                 <!-- /.sidebar -->
             </aside>
@@ -164,16 +251,200 @@ AppAsset::register($this);
                     <?= $content ?>
                 </section>
             </div>
-        </div>
 
-        <footer class="main-footer">
-            <div class="pull-right hidden-xs">
-                <b>Version</b> 2.0
-            </div>
-            <strong>Copyright &copy; <?= Date('Y') . '' ?> <a href="http://www.mof.go.tz">ACCGEN - Dev Unit</a>.</strong>
-            All rights reserved.
+            <footer class="main-footer">
+                <div class="pull-right hidden-xs">
+                    <b>Version</b> 2.1
+                </div>
+                <strong>Copyright &copy; <?= '2016' ?> <a href="http://www.mof.go.tz">SDU</a>.</strong>
+                All rights reserved.          
+            </footer>   
+        </div>  
 
-        </footer>        
+        <?php
+//        JS Handler for Financial Statement Report
+        $this->registerJs(
+                "$('.btnFinancialStmt').click(function() {
+    $.get(
+        'index.php?r=report/financial-performance',         
+        function (data) {
+            $('.modal-body').html(data);
+            $('#modalReportParameters').modal();
+        }  
+    );
+});
+    "
+        );
+
+//        JS Handler for Financial Position Report
+        $this->registerJs(
+                "$('.btnFinancialPosition').click(function() {
+    $.get(
+        'index.php?r=report/financial-position',         
+        function (data) {
+            $('.modal-body').html(data);
+            $('#modalReportParameters').modal();
+        }  
+    );
+});
+    "
+        );
+
+//       JS Handler for Changes in Equity Report
+        $this->registerJs(
+                "$('.btnChangesInEquity').click(function() {
+    $.get(
+        'index.php?r=report/changes-in-equity',         
+        function (data) {
+            $('.modal-body').html(data);
+            $('#modalReportParameters').modal();
+        }  
+    );
+});
+    "
+        );
+
+        //       JS Handler for Cash Flow Statement Report
+        $this->registerJs(
+                "$('.btnCashFlowStmt').click(function() {
+    $.get(
+        'index.php?r=report/cash-flow-statement',         
+        function (data) {
+            $('.modal-body').html(data);
+            $('#modalReportParameters').modal();
+        }  
+    );
+});
+    "
+        );
+
+        //       JS Handler for Budget Vs Actual Report
+        $this->registerJs(
+                "$('.btnBudgetVsActual').click(function() {
+    $.get(
+        'index.php?r=report/budget-vs-actual',         
+        function (data) {
+            $('.modal-body').html(data);
+            $('#modalReportParameters').modal();
+        }  
+    );
+});
+    "
+        );
+
+        //       JS Handler for Segmented Financial Performance Report
+        $this->registerJs(
+                "$('.btnSegFinancialPerformance').click(function() {
+    $.get(
+        'index.php?r=report/segmented-financial-performance',         
+        function (data) {
+            $('.modal-body').html(data);
+            $('#modalSegmentedReports').modal();
+        }  
+    );
+});
+    "
+        );
+
+        //       JS Handler for Segmented Financial Position Report
+        $this->registerJs(
+                "$('.btnSegFinancialPosition').click(function() {
+    $.get(
+        'index.php?r=report/segmented-financial-position',         
+        function (data) {
+            $('.modal-body').html(data);
+            $('#modalSegmentedReports').modal();
+        }  
+    );
+});
+    "
+        );
+
+        //       JS Handler for Segmented Cash Flow Statement Report
+        $this->registerJs(
+                "$('.btnSegCashFlowStmt').click(function() {
+    $.get(
+        'index.php?r=report/segmented-cash-flow-statement',         
+        function (data) {
+            $('.modal-body').html(data);
+            $('#modalSegmentedReports').modal();
+        }  
+    );
+});
+    "
+        );
+
+        //       JS Handler for Trial Balance Report
+        $this->registerJs(
+                "$('.btnTrialBalance').click(function() {
+    $.get(
+        'index.php?r=report/trial-balance',         
+        function (data) {
+            $('.modal-body').html(data);
+            $('#modalReportParameters').modal();
+        }  
+    );
+});
+    "
+        );
+
+        //       JS Handler for Consolidation Status Report
+        $this->registerJs(
+                "$('.btnConsoStatus').click(function() {
+    $.get(
+        'index.php?r=report/consolidation-status',         
+        function (data) {
+            $('.modal-body').html(data);
+            $('#modalConsolidationStatus').modal();
+        }  
+    );
+});
+    "
+        );
+
+        //       JS Handler for Entity List Report
+        $this->registerJs(
+                "$('.btnEntityList').click(function() {
+    $.get(
+        'index.php?r=report/entity-list',         
+        function (data) {
+            $('.modal-body').html(data);
+            $('#modalEntityList').modal();
+        }  
+    );
+});
+    "
+        );
+
+        //       JS Handler for GFS List Report
+        $this->registerJs(
+                "$('.btnGFSList').click(function() {
+    $.get(
+        'index.php?r=report/gfs-list',         
+        function (data) {
+            $('.modal-body').html(data);
+            $('#modalGfsList').modal();
+        }  
+    );
+});
+    "
+        );
+
+        //       JS Handler for Notes Report
+        $this->registerJs(
+                "$('.btnNotes').click(function() {
+    $.get(
+        'index.php?r=report/notes',         
+        function (data) {
+            $('.modal-body').html(data);
+            $('#modalReportParameters').modal();
+        }  
+    );
+});
+    "
+        );
+        ?>
+
         <?php $this->endBody() ?>
     </body>
 </html>

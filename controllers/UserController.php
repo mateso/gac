@@ -8,6 +8,7 @@ use app\models\UserSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * UserController implements the CRUD actions for User model.
@@ -19,6 +20,16 @@ class UserController extends Controller {
      */
     public function behaviors() {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'create', 'view', 'update'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@']
+                    ]
+                ]
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -59,12 +70,20 @@ class UserController extends Controller {
      * @return mixed
      */
     public function actionCreate() {
-        $model = new User;
+        $model = new User(['scenario' => 'create']);
+
         if ($model->load(Yii::$app->request->post())) {
             $model->setPassword($model->password_hash);
+            $model->password_hash_repeat = $model->password_hash;
             $model->status = User::STATUS_ACTIVE;
+            $model->created_by = Yii::$app->user->identity->id;
+            
             if ($model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                return $this->render('create', [
+                            'model' => $model,
+                ]);
             }
         } else {
             return $this->render('create', [
@@ -100,9 +119,7 @@ class UserController extends Controller {
      * @return mixed
      */
     public function actionDelete($id) {
-        $model = $this->findModel($id);
-        $model->status = User::STATUS_DELETED;
-        $model->save();
+        $this->findModel($id)->delete();
         return $this->redirect(['index']);
     }
 

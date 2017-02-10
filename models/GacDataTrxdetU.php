@@ -13,10 +13,13 @@ use Yii;
  * @property string $GFSCode
  * @property integer $ClassificationCode
  * @property integer $FiscalYear
- * @property string $NoteNo
+ * @property integer $EliminationFlag
  * @property double $ApprovedBudget
  * @property double $Reallocation
  * @property double $Actual
+ * @property double $ActualCr
+ * @property double $ActualDr
+ * @property integer $SubchapterId
  * @property string $EntryDate
  * @property integer $EntryUser
  * @property integer $ApprovedFlag
@@ -32,6 +35,7 @@ class GacDataTrxdetU extends \yii\db\ActiveRecord {
 
     public $SubchapterId;
     public $ItemCode;
+    public $Actual;
     public $GFSCodeDesc;
 
     /**
@@ -46,11 +50,20 @@ class GacDataTrxdetU extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['FiscalYear', 'GFSCode', 'Actual'], 'required'],
+            [['FiscalYear', 'GFSCode'], 'required'],
+            [['Actual'], 'required', 'on' => 'create'],
+//            ['EliminationFlag', 'required',
+//                'when' => function($model) {
+//                    return GacGfsListV::getChapterCodebyGfsmCode($model->GFSCode) == 1;
+//                },
+//                'whenClient' => "function (attribute, value){
+//                 return ($('#gacdatatrxdetu-subchapterid').val()) < 5}",
+//                'message' => 'Select one of the two options above'],
+            [['EliminationFlag'], 'required'],
             [['TransCtrlNum'], 'unique'],
-            [['TransCtrlNum', 'EntityCode', 'BookID', 'GFSCode', 'NoteNo'], 'string'],
+            [['TransCtrlNum', 'EntityCode', 'BookID', 'GFSCode'], 'string'],
             [['ClassificationCode', 'FiscalYear', 'EntryUser', 'ApprovedFlag', 'ApprovalUser', 'PostedFlag', 'ClosedFlag', 'VoidedBy'], 'integer'],
-            [['ApprovedBudget', 'Reallocation', 'Actual'], 'number'],
+            [['ApprovedBudget', 'Reallocation', 'Actual', 'ActualCr', 'ActualDr', 'EliminationFlag'], 'number'],
             [['EntryDate', 'ApprovedDate', 'SubchapterId', 'ItemCode', 'ClassificationCode', 'GFSCodeDesc', 'IsVoided', 'VoidedDate'], 'safe'],
             ['GFSCode', 'exist', 'targetClass' => 'app\models\GacGfsListV', 'targetAttribute' => 'GFSMCode']
         ];
@@ -67,10 +80,12 @@ class GacDataTrxdetU extends \yii\db\ActiveRecord {
             'GFSCode' => 'GFS Code',
             'ClassificationCode' => 'Classification Code',
             'FiscalYear' => 'Fiscal Year',
-            'NoteNo' => 'Note No',
+            'EliminationFlag' => 'Elimination Flag',
             'ApprovedBudget' => 'Approved Budget',
             'Reallocation' => 'Reallocation/Adjustment',
             'Actual' => 'Actual',
+            'ActualCr' => 'Actual Credit',
+            'ActualDr' => 'Actual Debit',
             'EntryDate' => 'Entry Date',
             'EntryUser' => 'Entry User',
             'ApprovedFlag' => 'Approved Flag',
@@ -91,7 +106,7 @@ class GacDataTrxdetU extends \yii\db\ActiveRecord {
     public function getGacGfsListU() {
         return $this->hasOne(GacGfsListU::className(), ['GFSTransaction' => 'GFSCode']);
     }
-    
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -133,7 +148,7 @@ class GacDataTrxdetU extends \yii\db\ActiveRecord {
 
     public static function generateTransCtrlNumber($id) {
         $model = self::find()->orderBy('ID DESC')->one();
-        $fiscal_year = substr(GacGlobPeriodU::getFiscalYearDesc($id), -2);
+        $fiscal_year = substr($id, -2);
         if ($model) {
             return 'TRX' . $fiscal_year . str_pad(((int) substr($model->TransCtrlNum, -6) + 1), 6, 0, STR_PAD_LEFT);
         }

@@ -8,6 +8,7 @@ use app\models\GacGfsItemsUSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 use \app\models\GacGfsSubchapterU;
 use app\models\GacGfsListV;
 
@@ -21,6 +22,16 @@ class GacGfsItemsUController extends Controller {
      */
     public function behaviors() {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'create', 'view', 'update'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@']
+                    ]
+                ]
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -134,7 +145,7 @@ class GacGfsItemsUController extends Controller {
                 echo "<option value='" . $gfsList->GFSMCode . "'>" . $gfsList->ItemDescription . "</option>";
             }
         } else {
-            echo "<option></option>";
+            echo "<option>Select GFS Code</option>";
         }
     }
 

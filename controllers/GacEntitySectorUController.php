@@ -8,6 +8,7 @@ use app\models\GacEntitySectorUSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 use app\models\GacEntitySubsectorU;
 
 /**
@@ -20,6 +21,16 @@ class GacEntitySectorUController extends Controller {
      */
     public function behaviors() {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'create', 'view', 'update'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@']
+                    ]
+                ]
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -126,12 +137,12 @@ class GacEntitySectorUController extends Controller {
                 ->all();
 
         if ($countSubSectorItems > 0) {
-            echo "<option></option>";
+            echo "<option>Select Sub Sector</option>";
             foreach ($subSectorItems as $subSectorItem) {
                 echo "<option value='" . $subSectorItem->SubSectorID . "'>" . $subSectorItem->SubSectorDescription . "</option>";
             }
         } else {
-            echo "<option></option>";
+            echo "<option>No Sub Sector</option>";
         }
     }
 

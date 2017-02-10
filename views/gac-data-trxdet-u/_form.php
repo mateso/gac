@@ -32,6 +32,12 @@ use app\models\GacGfsClassificationU;
                                 ->where(['ItemCode' => $model->ItemCode, 'SubChapterCode' => $SubChapterCode, 'ChapterCode' => $ChapterCode])
                                 ->all(), 'GFSMCode', 'ItemDescription');
         $lblGFSCode = $model->GFSCode;
+
+        if ($ChapterCode == 1) {
+            $model->Actual = $model->ActualCr;
+        } else {
+            $model->Actual = $model->ActualDr;
+        }
     }
     ?>
 
@@ -49,17 +55,19 @@ use app\models\GacGfsClassificationU;
 
                             <?=
                             $form->field($model, 'FiscalYear')->dropDownList(
-                                    ArrayHelper::map(GacGlobPeriodU::find()->all(), 'ID', 'fiscal_year'), [
+                                    ArrayHelper::map(GacGlobPeriodU::find()->all(), 'fiscal_year', 'fiscal_year'), [
                                 'prompt' => 'Select Fiscal Year',
                                 'onchange' => '
-                              $.get(
-        "index.php?r=gac-glob-period-u/get-period-definition-by-period-id",         
-        {
-            id: $("#gacdatatrxdetu-fiscalyear").val()
-        },
-        function (data) {
-$("label#lblItemDefinition").html(data);
-        });',
+                $("label#lblItemDefinition").html("Fiscal Year Definition");                          
+
+                $.get(
+                "index.php?r=gac-glob-period-u/get-period-definition-by-period-id",         
+                {
+                id: $("#gacdatatrxdetu-fiscalyear").val()
+                },
+                function (data) {        
+                $("div#divItemDefinition").html(data);
+                });',
                             ]);
                             ?>
 
@@ -67,39 +75,52 @@ $("label#lblItemDefinition").html(data);
                             $form->field($model, 'SubchapterId')->dropDownList(
                                     ArrayHelper::map(GacGfsSubchapterU::find()->all(), 'ID', 'SubChapterDescription'), [
                                 'prompt' => 'Select GFS Subchapter',
-                                'onchange' => '                                      
-$.get(
-        "index.php?r=gac-gfs-subchapter-u/get-sub-chapter-definition-by-sub-chapter-id",         
-        {
-            id: $("#gacdatatrxdetu-subchapterid").val()
-        },
-        function (data) {
-$("label#lblItemDefinition").html(data);
-        });
+                                'onchange' => '   
+                $("label#lblItemDefinition").html("Sub Chapter Definition");
+                $("select#gacdatatrxdetu-gfscode").html("");
+                $("label#lblGFSCode").hide();
+                $("label#lblGFSCode").html("");
+        
+                $.get(
+                "index.php?r=gac-gfs-subchapter-u/get-sub-chapter-definition-by-sub-chapter-id",         
+                {
+                id: $("#gacdatatrxdetu-subchapterid").val()
+                },
+                function (data) {
+                $("div#divItemDefinition").html(data);
+                });
         
                 $.get("index.php?r=gac-gfs-subchapter-u/load-gfs-items&id=' . '"+$(this).val(), function(data){
                 $("select#gacdatatrxdetu-itemcode").html(data);
-                    });                      
+                });                      
                     
-$.get(
-        "index.php?r=gac-gfs-subchapter-u/get-chapter-code-by-sub-chapter-id",         
-        {
-            id: $("#gacdatatrxdetu-subchapterid").val()
-        },
-        function (data) {
-            var chapterCode = data;
-                if(chapterCode == 3){                         
+                $.get(
+                "index.php?r=gac-gfs-subchapter-u/get-chapter-code-by-sub-chapter-id",         
+                {
+                id: $("#gacdatatrxdetu-subchapterid").val()
+                },
+                function (data) {
+                var chapterCode = data;
+                if(chapterCode == 1){       
+                $("label[for=gacdatatrxdetu-classificationcode]").hide();
+                $("#gacdatatrxdetu-classificationcode").hide();
+//                $("label[for=gacdatatrxdetu-eliminationflag]").show();
+//                $("#gacdatatrxdetu-eliminationflag").show();
+//                $("input:radio[name=GacDataTrxdetU[EliminationFlag]][value=0]").click();
+                $("#gacdatatrxdetu-approvedbudget").prop("disabled", false);
+                $("#gacdatatrxdetu-reallocation").prop("disabled", false);
+                }
+                else if(chapterCode == 3){                         
                 $("label[for=gacdatatrxdetu-classificationcode]").show();
-            $("#gacdatatrxdetu-classificationcode").show();
+                $("#gacdatatrxdetu-classificationcode").show();
                 }else{
                 $("label[for=gacdatatrxdetu-classificationcode]").hide();
-            $("#gacdatatrxdetu-classificationcode").hide();
+                $("#gacdatatrxdetu-classificationcode").hide();
+//                $("label[for=gacdatatrxdetu-eliminationflag]").hide();
+//                $("#gacdatatrxdetu-eliminationflag").hide();
                 }
-        }  
-    );   
-//              $("#gacdatatrxdetu-gfscode").val(0);
-                $("label#lblGFSCode").hide();
-                $("label#lblGFSCode").html("");'
+                }  
+                );'
                             ]);
                             ?>
 
@@ -107,16 +128,18 @@ $.get(
                             $form->field($model, 'ItemCode')->dropDownList(
                                     $gfsItemsData, [
                                 'prompt' => 'Select GFS Item',
-                                'onchange' => '   
-$.get(
-        "index.php?r=gac-gfs-items-u/get-item-definition-by-gfs-item-code",         
-        {
-            id: $("#gacdatatrxdetu-itemcode").val()
-        },
-        function (data) {
-$("label#lblItemDefinition").html(data);
-        }  
-    );
+                                'onchange' => '                                  
+                $("label#lblItemDefinition").html("Item Definition");
+
+                $.get(
+                "index.php?r=gac-gfs-items-u/get-item-definition-by-gfs-item-code",         
+                {
+                id: $("#gacdatatrxdetu-itemcode").val()
+                 },
+                function (data) {
+                $("div#divItemDefinition").html(data);
+                }  
+                );
     
                 if(!$("#gacdatatrxdetu-classificationcode").is(":visible")){
                 $.get("index.php?r=gac-gfs-items-u/load-gfs-lists-by-item-code&id="+$(this).val()+"&scc="+$("#gacdatatrxdetu-subchapterid").val(), function(data){
@@ -134,28 +157,29 @@ $("label#lblItemDefinition").html(data);
                                     ArrayHelper::map(GacGfsClassificationU::find()->all(), 'ClassificationCode', 'ClassificationDescription'), [
                                 'prompt' => 'Select Classification',
                                 'onchange' => '   
-//$.get(
-//        "index.php?r=gac-gfs-items-u/get-item-definition-by-gfs-item-code",         
-//        {
-//            id: $("#gacdatatrxdetu-itemcode").val()
-//        },
-//        function (data) {
-//$("label#lblItemDefinition").html(data);
-//        }  
-//    );
+                //$.get(
+                //        "index.php?r=gac-gfs-items-u/get-item-definition-by-gfs-item-code",         
+                //        {
+                //            id: $("#gacdatatrxdetu-itemcode").val()
+                //        },
+                //        function (data) {
+                //$("label#lblItemDefinition").html(data);
+                //        }  
+                //    );
     
                 $.get("index.php?r=gac-gfs-classification-u/load-gfs-lists-by-classification-code&id="+$(this).val()+"&itemId="+$("#gacdatatrxdetu-itemcode").val()+"&scc="+$("#gacdatatrxdetu-subchapterid").val(), function(data){
                 $("select#gacdatatrxdetu-gfscode").html(data);
                     });
                     
-if($("#gacdatatrxdetu-classificationcode").val()!=1){
-$("#gacdatatrxdetu-approvedbudget").prop("disabled", true);
-$("#gacdatatrxdetu-reallocation").prop("disabled", true);
-}else{
-$("#gacdatatrxdetu-approvedbudget").prop("disabled", false);
-$("#gacdatatrxdetu-reallocation").prop("disabled", false);
-}
-'
+                if($("#gacdatatrxdetu-classificationcode").val()==1){
+                $("#gacdatatrxdetu-approvedbudget").prop("disabled", false);
+                $("#gacdatatrxdetu-reallocation").prop("disabled", false);
+                }else{
+                $("#gacdatatrxdetu-approvedbudget").val("");
+                $("#gacdatatrxdetu-reallocation").val("");
+                $("#gacdatatrxdetu-approvedbudget").prop("disabled", true);
+                $("#gacdatatrxdetu-reallocation").prop("disabled", true);
+                }'
                             ]);
                             ?>
 
@@ -165,31 +189,40 @@ $("#gacdatatrxdetu-reallocation").prop("disabled", false);
                                     $gfsCodeData, [
                                 'prompt' => 'Select GFS Code',
                                 'onchange' => '
-                $.get("index.php?r=gac-gfs-list-u/get-gfs-code-desc&id=' . '"+$(this).val(), function(data){
-$("div#divGFSCode").show();
-$("label#lblGFSCode").show();
-$("label#lblGFSCode").html(data);
+                $("label#lblItemDefinition").html("GFS Code Definition");
                 
-$.get(
-        "index.php?r=gac-gfs-list-u/get-item-definition-by-gfs-code",         
-        {
-            id: $("#gacdatatrxdetu-gfscode").val()
-        },
-        function (data) {
-$("label#lblItemDefinition").html(data);
-        }  
-    );
+                $.get("index.php?r=gac-gfs-list-u/get-gfs-code-desc&id=' . '"+$(this).val(), function(data){
+                $("div#divGFSCode").show();
+                $("label#lblGFSCode").show();
+                $("label#lblGFSCode").html(data);
+                
+                $.get(
+                "index.php?r=gac-gfs-list-u/get-item-definition-by-gfs-code",         
+                {
+                id: $("#gacdatatrxdetu-gfscode").val()
+                },
+                function (data) {
+                $("div#divItemDefinition").html(data);
+                }  
+                );
 
-                    })'
+                })'
                             ]);
                             ?>
                             <label id="lblGFSCode"><?= $lblGFSCode ?></label>
 
                             <?= $form->field($model, 'ApprovedBudget')->textInput() ?>
 
-                            <?= $form->field($model, 'Reallocation')->textInput() ?>
+                            <?= $form->field($model, 'Reallocation')->textInput() ?>                          
 
                             <?= $form->field($model, 'Actual')->textInput() ?>
+
+                            <?=
+                            $form->field($model, 'EliminationFlag')->radioList([
+                                1 => 'Actual Within Govt Entity',
+                                0 => 'Actual Outside Govt Entity',                              
+                            ])->label(FALSE)
+                            ?>
 
                             <div class="form-group">
                                 <?= Html::submitButton($model->isNewRecord ? 'Save' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
@@ -200,9 +233,9 @@ $("label#lblItemDefinition").html(data);
                         </div>
                         <div class="col-md-7">
                             <p class="text-center">
-                                <strong>Item Definition</strong>
+                                <label id="lblItemDefinition">Item Definition</label>
                             </p>
-                            <label id="lblItemDefinition"></label>
+                            <div id="divItemDefinition" style="text-align: justify; text-justify: inter-word"></div>
                         </div>
 
                         <!-- /.col -->
@@ -220,7 +253,16 @@ $("label#lblItemDefinition").html(data);
 
 <?php
 $this->registerJs(
-"$(document).ready(function() {            
+        "$(document).ready(function() {  
+//Toggle the display of elimination flag label and it's radiolist
+//if( $ChapterCode == 1){
+//$('label[for=gacdatatrxdetu-eliminationflag]').show();
+//$('#gacdatatrxdetu-eliminationflag').show();
+//}else{
+//$('control-label[for=gacdatatrxdetu-eliminationflag]').hide();
+//$('#gacdatatrxdetu-eliminationflag').hide();
+//}            
+
 //Toggle the display of classification label and it's dropdownlist
 if( $ChapterCode == 3){
 $('label[for=gacdatatrxdetu-classificationcode]').show();

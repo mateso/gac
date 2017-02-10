@@ -19,7 +19,7 @@ class GacDataTrxVSearch extends GacDataTrxV
     {
         return [
             [['FiscalYear', 'NumTransaction', 'ApprovedFlag', 'PostedFlag', 'ClosedFlag'], 'integer'],
-            [['InstitutionalCode', 'EntityCode', 'EntityDescription', 'ApprovedDate', 'DatePosted'], 'safe'],
+            [['InstitutionalCode', 'EntityCode', 'EntityDescription', 'ApprovedDate', 'DatePosted', 'ActualDr', 'ActualCr'], 'safe'],
         ];
     }
 

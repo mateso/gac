@@ -41,7 +41,7 @@ class GacGfsListUSearch extends GacGfsListU
      */
     public function search($params)
     {
-        $query = GacGfsListU::find();
+        $query = GacGfsListU::find()->where(['ActiveFlag' => 1])->orderBy(['ID' => SORT_DESC]);
 
         // add conditions that should always apply here
 

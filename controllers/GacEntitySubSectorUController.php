@@ -8,6 +8,7 @@ use app\models\GacEntitySubSectorUSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 use app\models\GacEntityListV;
 
 /**
@@ -20,6 +21,16 @@ class GacEntitySubSectorUController extends Controller {
      */
     public function behaviors() {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'create', 'view', 'update'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@']
+                    ]
+                ]
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -114,6 +125,10 @@ class GacEntitySubSectorUController extends Controller {
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+    
+    public function actionGetEntitySectorIdByEntitySubSectorId($id) {
+        return GacEntitySubSectorU::getEntitySectorIdByEntitySubSectorId($id);
     }
 
     public function actionLoadEntityListItems($id, $sid) {

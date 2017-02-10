@@ -18,8 +18,8 @@ class GacDataTrxdetUSearch extends GacDataTrxdetU {
     public function rules() {
         return [
             [['ID', 'ClassificationCode', 'FiscalYear', 'EntryUser', 'ApprovedFlag', 'ApprovalUser', 'PostedFlag', 'ClosedFlag'], 'integer'],
-            [['TransCtrlNum', 'EntityCode', 'BookID', 'GFSCode', 'GFSCodeDesc', 'NoteNo', 'EntryDate', 'ApprovedDate'], 'safe'],
-            [['ApprovedBudget', 'Reallocation', 'Actual'], 'number'],
+            [['TransCtrlNum', 'EntityCode', 'BookID', 'GFSCode', 'GFSCodeDesc', 'EliminationFlag', 'EntryDate', 'ApprovedDate'], 'safe'],
+            [['ApprovedBudget', 'Reallocation', 'Actual', 'ActualCr', 'ActualDr'], 'number'],
         ];
     }
 
@@ -69,7 +69,8 @@ class GacDataTrxdetUSearch extends GacDataTrxdetU {
             'FiscalYear' => $this->FiscalYear,
             'ApprovedBudget' => $this->ApprovedBudget,
             'Reallocation' => $this->Reallocation,
-            'Actual' => $this->Actual,
+            'ActualCr' => $this->ActualCr,
+            'ActualDr' => $this->ActualDr,
             'EntryDate' => $this->EntryDate,
             'EntryUser' => $this->EntryUser,
             'ApprovedFlag' => $this->ApprovedFlag,
@@ -84,7 +85,7 @@ class GacDataTrxdetUSearch extends GacDataTrxdetU {
                 ->andFilterWhere(['like', 'BookID', $this->BookID])
                 ->andFilterWhere(['like', 'GFSCode', $this->GFSCode])
                 ->andFilterWhere(['like', 'gac_gfs_list_v.ItemDescription', $this->GFSCodeDesc])
-                ->andFilterWhere(['like', 'NoteNo', $this->NoteNo]);
+                ->andFilterWhere(['like', 'EliminationFlag', $this->EliminationFlag]);
 
         return $dataProvider;
     }

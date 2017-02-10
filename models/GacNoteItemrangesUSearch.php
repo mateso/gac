@@ -19,7 +19,7 @@ class GacNoteItemrangesUSearch extends GacNoteItemrangesU
     {
         return [
             [['ID', 'ActiveFlag', 'UserCreated', 'UserModified'], 'integer'],
-            [['ItemCode', 'ViewableMask', 'NonViewableMask', 'NoteNo', 'ItemStart', 'ItemEnd', 'DateCreated', 'DateModified'], 'safe'],
+            [['NoteNo', 'ItemStart', 'ItemEnd', 'DateCreated', 'DateModified'], 'safe'],
         ];
     }
 
@@ -67,9 +67,7 @@ class GacNoteItemrangesUSearch extends GacNoteItemrangesU
             'UserModified' => $this->UserModified,
         ]);
 
-        $query->andFilterWhere(['like', 'ItemCode', $this->ItemCode])
-            ->andFilterWhere(['like', 'ViewableMask', $this->ViewableMask])
-            ->andFilterWhere(['like', 'NonViewableMask', $this->NonViewableMask])
+        $query
             ->andFilterWhere(['like', 'NoteNo', $this->NoteNo])
             ->andFilterWhere(['like', 'ItemStart', $this->ItemStart])
             ->andFilterWhere(['like', 'ItemEnd', $this->ItemEnd]);

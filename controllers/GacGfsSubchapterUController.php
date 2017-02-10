@@ -8,7 +8,9 @@ use app\models\GacGfsSubchapterUSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 use app\models\GacGfsListV;
+use app\models\GacGfsItemsU;
 
 /**
  * GacGfsSubchapterUController implements the CRUD actions for GacGfsSubchapterU model.
@@ -20,6 +22,16 @@ class GacGfsSubchapterUController extends Controller {
      */
     public function behaviors() {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'create', 'view', 'update'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@']
+                    ]
+                ]
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -136,6 +148,30 @@ class GacGfsSubchapterUController extends Controller {
             echo "<option>Select GFS Item</option>";
             foreach ($gfsItems as $gfsItem) {
                 echo "<option value='" . $gfsItem->ItemCode . "'>" . $gfsItem->ItemShortDescription . "</option>";
+            }
+        } else {
+            echo "<option>No GFS Item</option>";
+        }
+    }
+    
+    public function actionLoadGfsItemsU($id) {
+        $subChapterCode = GacGfsSubchapterU::getSubChapterCodeBySubChapterId($id);
+        $chapterCode = GacGfsSubchapterU::getChapterCodeBySubChapterId($id);
+        $count = GacGfsItemsU::find()
+                ->select(['ItemCode', 'ItemShortDescription'])
+                ->where(['ChapterCode' => $chapterCode, 'SubChapterCode' => $subChapterCode])
+                ->count();
+
+        $models = GacGfsItemsU::find()
+                ->select(['ItemCode', 'ItemShortDescription'])
+                ->where(['ChapterCode' => $chapterCode, 'SubChapterCode' => $subChapterCode])
+                ->orderBy(['ItemShortDescription' => SORT_ASC])
+                ->all();
+
+        if ($count > 0) {
+            echo "<option>Select GFS Item</option>";
+            foreach ($models as $model) {
+                echo "<option value='" . $model->ItemCode . "'>" . $model->ItemShortDescription . "</option>";
             }
         } else {
             echo "<option>No GFS Item</option>";

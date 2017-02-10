@@ -17,8 +17,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'ID') ?>
 
-    <?= $form->field($model, 'period_type') ?>
-
     <?= $form->field($model, 'fiscal_year') ?>
 
     <?= $form->field($model, 'period_description') ?>
@@ -26,8 +24,6 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'period_start_date') ?>
 
     <?php // echo $form->field($model, 'period_end_date') ?>
-
-    <?php // echo $form->field($model, 'initialized_flag') ?>
 
     <?php // echo $form->field($model, 'closed_flag') ?>
 

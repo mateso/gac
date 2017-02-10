@@ -14,7 +14,6 @@ use Yii;
  * @property string $VoteCode
  * @property string $EntityCode
  * @property string $EntityDescription
- * @property string $TransRelation
  * @property integer $ActiveFlag
  * @property string $DateCreated
  * @property integer $UserCreated
@@ -40,7 +39,7 @@ class GacEntityListU extends \yii\db\ActiveRecord {
         return [
             [['SectorID', 'SubSectorID', 'ActiveFlag', 'UserCreated', 'UserModified'], 'integer'],
             [['SectorID', 'SubSectorID', 'InstitutionalCode'], 'required'],
-            [['InstitutionalCode', 'VoteCode', 'EntityCode', 'EntityDescription', 'TransRelation', 'ContactPerson', 'ContactNumber', 'Region'], 'string'],
+            [['InstitutionalCode', 'VoteCode', 'EntityCode', 'EntityDescription', 'ContactPerson', 'ContactNumber', 'Region'], 'string'],
             [['DateCreated', 'DateModified'], 'safe'],
         ];
     }
@@ -57,7 +56,6 @@ class GacEntityListU extends \yii\db\ActiveRecord {
             'VoteCode' => 'Vote Code',
             'EntityCode' => 'Entity Code',
             'EntityDescription' => 'Entity Description',
-            'TransRelation' => 'Trans Relation',
             'ActiveFlag' => 'Active Flag',
             'DateCreated' => 'Date Created',
             'UserCreated' => 'User Created',

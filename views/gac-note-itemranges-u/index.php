@@ -28,16 +28,22 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'ItemStart',
-                'width' => '35%',
+                'width' => '33%',
             ],
             [
                 'attribute' => 'ItemEnd',
-                'width' => '35%',
+                'width' => '33%',
             ],
             [
                 'attribute' => 'ActiveFlag',
-                'width' => '5%',
+                'width' => '12%',
                 'hAlign' => 'left',
+                'value' => function ($model) {
+                    return $model->ActiveFlag == 1 ? "Active" : "Inactive";
+                },
+                'filter' => Html::activeDropDownList(
+                        $searchModel, 'ActiveFlag', ['1' => 'Active', '0' => 'Inactive'], ['class' => 'form-control', 'prompt' => Yii::t('app', 'ALL')]
+                )
             ],
             // 'DateCreated',
             // 'UserCreated',

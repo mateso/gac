@@ -16,6 +16,7 @@ use app\models\GacEntityListU;
  * @property integer $id
  * @property string $username
  * @property string $password_hash
+ * @property string $password_hash_repeat
  * @property string $firstname
  * @property string $lastname
  * @property string $email
@@ -38,6 +39,7 @@ class User extends ActiveRecord implements IdentityInterface {
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 1;
 
+    public $password_hash_repeat;
     public $entity_sector_id;
     public $entity_sub_sector_id;
 
@@ -62,12 +64,15 @@ class User extends ActiveRecord implements IdentityInterface {
      */
     public function rules() {
         return [
-            [['username', 'password_hash', 'institutional_code'], 'required'],
+            [['username', 'institutional_code'], 'required'],
+            [['username'], 'unique', 'targetClass' => 'app\models\User', 'targetAttribute' => 'username'],
+            [['password_hash', 'password_hash_repeat'], 'required', 'on' => 'create'],
+            [['password_hash_repeat'], 'compare', 'compareAttribute' => 'password_hash', 'message' => 'The passwords must match'],
             [['status', 'login_counts', 'failed_login_attempts', 'created_by'], 'integer'],
             [['last_login_date', 'last_password_update_date', 'created_at', 'entity_sector_id', 'entity_sub_sector_id', 'institutional_code', 'updated_at', 'firstname', 'lastname'], 'safe'],
-            [['username', 'password_hash', 'email', 'phone', 'auth_key', 'password_reset_token'], 'string', 'max' => 255],
-            [['username'], 'unique'],
-            ['institutional_code', 'exist', 'targetClass' => 'app\models\GacEntityListV', 'targetAttribute' => 'InstitutionalCode']
+            [['username', 'password_hash', 'phone', 'auth_key', 'password_reset_token'], 'string', 'max' => 255],
+            ['institutional_code', 'exist', 'targetClass' => 'app\models\GacEntityListV', 'targetAttribute' => 'InstitutionalCode'],
+            [['email'], 'email'],
         ];
     }
 
@@ -81,6 +86,7 @@ class User extends ActiveRecord implements IdentityInterface {
             'firstname' => 'Firstname',
             'lastname' => 'Lastname',
             'password_hash' => 'Password',
+            'password_hash_repeat' => 'Confirm Password',
             'email' => 'Email',
             'phone' => 'Phone',
             'status' => 'Status',
@@ -240,7 +246,7 @@ class User extends ActiveRecord implements IdentityInterface {
     }
 
     public function getFullName() {
-        return $this->firstname.' '.$this->lastname;
+        return $this->firstname . ' ' . $this->lastname;
     }
 
 }

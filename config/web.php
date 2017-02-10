@@ -16,7 +16,8 @@ $config = [
         ],
         'user' => [
             'identityClass' => 'app\models\User',
-            'enableAutoLogin' => true,
+            'enableAutoLogin' => FALSE,
+            'authTimeout' => 1200,
         ],
         'authManager' => [
             'class' => 'yii\rbac\DbManager',

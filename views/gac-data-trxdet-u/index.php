@@ -16,8 +16,8 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="gac-data-trxdet-u-index">
     <?php //echo $this->render('_search', ['model' => $searchModel]); ?>
-    <!-- Start of Approve Records Modal popup -->
 
+    <!-- Start of Approve Records Modal popup -->
     <?php
     Modal::begin([
         'header' => '<h4>Approve Records<h4>',
@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'type' => 'button',
                     'id' => 'btnApproveRecords',
                     'title' => 'Approve',
-                    'class' => 'btn btn-default',
+                    'class' => 'btn btn-danger',
                     'value' => Url::to('index.php?r=gac-data-trxdet-u/approve-records')
                 ])
             ],
@@ -51,10 +51,6 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         'columns' => [
             ['class' => 'kartik\grid\SerialColumn'],
-            // 'ID',
-            // 'TransCtrlNum',
-            // 'EntityCode',
-            // 'BookID',
             [
                 'attribute' => 'GFSCode',
                 'width' => '10%',
@@ -67,19 +63,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'pageSummary' => 'Total',
             ],
-            // 'ClassificationCode',
             [
                 'attribute' => 'FiscalYear',
                 'label' => 'Fiscal Year',
                 'width' => '10%',
-                'value' => function ($model) {
-                    return $model->fiscalYear->getFiscalYearDesc($model->FiscalYear);
-                },
                 'filter' => Html::activeDropDownList(
-                        $searchModel, 'FiscalYear', ArrayHelper::map(GacGlobPeriodU::find()->orderBy('ID')->asArray()->all(), 'ID', 'fiscal_year'), ['class' => 'form-control', 'prompt' => Yii::t('app', 'ALL')]
+                        $searchModel, 'FiscalYear', ArrayHelper::map(GacGlobPeriodU::find()->orderBy('ID')->asArray()->all(), 'fiscal_year', 'fiscal_year'), ['class' => 'form-control', 'prompt' => Yii::t('app', 'ALL')]
                 )
             ],
-            // 'NoteNo',
             [
                 'attribute' => 'ApprovedBudget',
                 'width' => '10%',
@@ -96,33 +87,54 @@ $this->params['breadcrumbs'][] = $this->title;
                 'pageSummary' => TRUE,
             ],
             [
-                'attribute' => 'Actual',
+                'attribute' => 'ActualDr',
                 'width' => '10%',
                 'hAlign' => 'right',
                 'format' => ['decimal', 2],
                 'pageSummary' => TRUE,
             ],
-            // 'EntryDate',
-            // 'EntryUser',
-            // 'ApprovedFlag',
-            // 'ApprovedDate',
-            // 'ApprovalUser',
-            // 'PostedFlag',
-            // 'PostedUser',
-            // 'ClosedFlag',
-            ['class' => 'kartik\grid\ActionColumn'],
-        ],
-        'responsive' => true,
-        'hover' => true,
-        'condensed' => true,
-        'floatHeader' => true,
-        'panel' => [
-            'heading' => '<h3 class="panel-title"><i class="glyphicon glyphicon-th-list"></i> ' . Html::encode($this->title) . ' </h3>',
-            'type' => 'info',
-            'before' => Html::a('<i class="glyphicon glyphicon-plus"></i> Add Transaction', ['create'], ['class' => 'btn btn-success']),
-            'after' => Html::a('<i class="glyphicon glyphicon-repeat"></i> Reset List', ['index'], ['class' => 'btn btn-info']),
-            'showFooter' => false
-        ],
-    ]);
-    ?>
+            [
+                'attribute' => 'ActualCr',
+                'width' => '10%',
+                'hAlign' => 'right',
+                'format' => ['decimal', 2],
+                'pageSummary' => TRUE,
+            ],
+            [
+                'class' => 'kartik\grid\ActionColumn',
+                'template' => '{view}{update}{delete}',
+                'buttons' => [
+                    'update' => function ($url, $model, $key) {
+                        return $model->ApprovedFlag != 1 ?
+                                Html::a('<span class="glyphicon glyphicon-pencil"></span>', yii::$app->urlManager->createUrl(['gac-data-trxdet-u/update', 'id' => $model->ID]), [
+                                        ]
+                                ) :
+                                '';
+                    },
+                            'delete' => function ($url, $model, $key) {
+                        return $model->ApprovedFlag != 1 ?
+                                Html::a('<span class="glyphicon glyphicon-trash"></span>', yii::$app->urlManager->createUrl(['gac-data-trxdet-u/delete', 'id' => $model->ID]), [
+                                        ]
+                                ) :
+                                '';
+                    },
+                        ],
+                    ],
+                ],
+                'responsive' => true,
+                'hover' => true,
+                'condensed' => true,
+                'floatHeader' => true,
+                'panel' => [
+                    'heading' => '<h3 class="panel-title"><i class="glyphicon glyphicon-th-list"></i> ' . Html::encode($this->title) . ' </h3>',
+                    'type' => 'info',
+                    'before' => Html::a('<i class="glyphicon glyphicon-plus"></i> Add Transaction', ['create'], ['class' => 'btn btn-success']),
+                    'after' => Html::a('<i class="glyphicon glyphicon-repeat"></i> Reset List', ['index'], ['class' => 'btn btn-info']),
+//            'afterOptions' => [
+//                'class' => 'pull-right',
+//            ],
+                    'showFooter' => TRUE,
+                ],
+            ]);
+            ?>
 </div>

@@ -1,13 +1,12 @@
 <?php
 
-use yii\helpers\Html;
 use kartik\detail\DetailView;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\GacNoteItemrangesU */
 
 $this->title = $model->NoteNo;
-$this->params['breadcrumbs'][] = ['label' => 'Gac Note Itemranges Us', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Note Item Ranges', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="gac-note-itemranges-u-view">
@@ -23,18 +22,21 @@ $this->params['breadcrumbs'][] = $this->title;
             'type' => DetailView::TYPE_INFO,
         ],
         'attributes' => [
-            'ID',
-            'ItemCode',
-            'ViewableMask',
-            'NonViewableMask',
+//            'ID',
             'NoteNo',
             'ItemStart',
             'ItemEnd',
-            'ActiveFlag',
-            'DateCreated',
-            'UserCreated',
-            'DateModified',
-            'UserModified',
+            [
+                'attribute' => 'ActiveFlag',
+                'format' => 'raw',
+                'type' => DetailView::INPUT_DROPDOWN_LIST,
+                'items' => ['1' => 'Active', '0' => 'Inactive'],
+                'value' => $model->ActiveFlag == 1 ? "Active" : "Inactive"
+            ],
+//            'DateCreated',
+//            'UserCreated',
+//            'DateModified',
+//            'UserModified',
         ],
         'deleteOptions' => [
             'url' => ['delete', 'id' => $model->ID],

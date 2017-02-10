@@ -21,12 +21,8 @@ use kartik\builder\Form;
                 echo Form::widget([
                     'model' => $model,
                     'form' => $form,
-                    'columns' => 3,
+                    'columns' => 2,
                     'attributes' => [
-                        'period_type' => [
-                            'type' => Form::INPUT_TEXT,
-                            'options' => ['placeholder' => 'Enter Period Type...']
-                        ],
                         'fiscal_year' => [
                             'type' => Form::INPUT_TEXT,
                             'options' => ['placeholder' => 'Enter Fiscal Year...']
@@ -57,14 +53,13 @@ use kartik\builder\Form;
                             ],
                             'hint' => 'Enter End Date (yyyy-mm-dd)'
                         ],
-                        'initialized_flag' => [
-                            'type' => Form::INPUT_TEXT,
-                            'options' => ['placeholder' => 'Enter Initialization Flag...']
-                        ],
-                        'closed_flag' => [
-                            'type' => Form::INPUT_TEXT,
-                            'options' => ['placeholder' => 'Enter Closed Flag...']
-                        ],
+//                        'closed_flag' => [
+//                            'type' => Form::INPUT_DROPDOWN_LIST,
+//                            'items' => ['1' => 'Open', '0' => 'Closed'],
+//                            'options' => [
+//                                'prompt' => 'Select Closed Flag...'
+//                                ]
+//                        ],
                     ],
                 ]);
 

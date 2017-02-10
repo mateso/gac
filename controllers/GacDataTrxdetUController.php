@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii;
 use app\models\GacDataTrxdetU;
 use app\models\GacDataTrxdetUSearch;
+use app\models\GacGfsSubchapterU;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -47,8 +48,7 @@ class GacDataTrxdetUController extends Controller {
     public function actionIndex() {
         $searchModel = new GacDataTrxdetUSearch();
         $entity_code = Yii::$app->user->identity->institutional_code;
-        $entry_user = Yii::$app->user->identity->id;
-        $condition = "EntityCode = " . "'$entity_code'" . " AND EntryUser = " . $entry_user . " AND IsVoided = " . "'FALSE'";
+        $condition = "EntityCode = " . "'$entity_code'" . " AND IsVoided = " . "'FALSE'";
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $condition);
 
         return $this->render('index', [
@@ -74,14 +74,36 @@ class GacDataTrxdetUController extends Controller {
      * @return mixed
      */
     public function actionCreate() {
-        $model = new GacDataTrxdetU();
+        $model = new GacDataTrxdetU(['scenario' => 'create']);
 
         if ($model->load(Yii::$app->request->post())) {
+            $chapterCode = GacGfsSubchapterU::getChapterCodeBySubChapterId($model->SubchapterId);
+//            if ($chapterCode == 1) {
+//                $model->ClassificationCode = 1;
+//                $model->ActualCr = $model->Actual;
+//            } else if ($chapterCode == 3 && $model->ClassificationCode == 3) {
+//                $model->ActualDr = (-1 * $model->Actual);
+//                $model->EliminationFlag = 0;
+//            } else {
+//                $model->ActualDr = $model->Actual;
+//                $model->EliminationFlag = 0;
+//            }
+
+            //Start replacement of above commented section
+            if ($chapterCode == 1) {
+                $model->ClassificationCode = 1;
+                $model->ActualCr = $model->Actual;
+            } else {
+                $model->ActualDr = $model->Actual;
+            }
+            //End of of above code block
+
             $model->TransCtrlNum = GacDataTrxdetU::generateTransCtrlNumber($model->FiscalYear);
             $model->EntityCode = (string) Yii::$app->user->identity->institutional_code;
             $model->EntryDate = Date('Y-m-d h:i:sa');
             $model->EntryUser = (int) Yii::$app->user->identity->id;
             $model->IsVoided = FALSE;
+            $model->ClosedFlag = 0;
             if ($model->save()) {
                 return $this->redirect(['index']);
             }
@@ -124,7 +146,6 @@ class GacDataTrxdetUController extends Controller {
         $model->VoidedBy = (int) Yii::$app->user->identity->id;
         $model->VoidedDate = Date('Y-m-d h:i:sa');
         $model->save();
-
         return $this->redirect(['index']);
     }
 
@@ -147,13 +168,15 @@ class GacDataTrxdetUController extends Controller {
         $model = new GacDataTrxdetU();
 
         if ($model->load(Yii::$app->request->post())) {
-            GacDataTrxdetU::updateAll(['ApprovedFlag' => 1, 'ApprovedDate' => date('Y-m-d h:i:s'),
+            GacDataTrxdetU::updateAll([
+                'ApprovedFlag' => 1, 'ApprovedDate' => date('Y-m-d h:i:s'),
                 'ApprovalUser' => Yii::$app->user->identity->id], [
-                'FiscalYear' => $model->FiscalYear, 'EntityCode' => Yii::$app->user->identity->institutional_code
+                'FiscalYear' => $model->FiscalYear,
+                'EntityCode' => Yii::$app->user->identity->institutional_code
             ]);
             return $this->redirect(['index']);
         } else {
-            return $this->renderAjax('approve', [
+            return $this->renderAjax('modalApproveRecords', [
                         'model' => $model,
             ]);
         }

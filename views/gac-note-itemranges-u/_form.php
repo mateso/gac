@@ -26,18 +26,6 @@ use app\models\GacNoteItemsU;
                     'form' => $form,
                     'columns' => 3,
                     'attributes' => [
-                        'ItemCode' => [
-                            'type' => Form::INPUT_TEXT,
-                            'options' => ['placeholder' => 'Enter Item Code...']
-                        ],
-                        'ViewableMask' => [
-                            'type' => Form::INPUT_TEXT,
-                            'options' => ['placeholder' => 'Enter Viewable Mask...']
-                        ],
-                        'NonViewableMask' => [
-                            'type' => Form::INPUT_TEXT,
-                            'options' => ['placeholder' => 'Enter Non Viewable Mask...']
-                        ],
                         'NoteNo' => [
                             'type' => Form::INPUT_DROPDOWN_LIST,
                             'items' => ArrayHelper::map(GacNoteItemsU::find()->all(), 'NoteNo', 'NoteNo'),

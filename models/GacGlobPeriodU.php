@@ -8,12 +8,10 @@ use Yii;
  * This is the model class for table "gac_glob_period_u".
  *
  * @property integer $ID
- * @property string $period_type
  * @property integer $fiscal_year
  * @property string $period_description
  * @property string $period_start_date
  * @property string $period_end_date
- * @property integer $initialized_flag
  * @property integer $closed_flag
  */
 class GacGlobPeriodU extends \yii\db\ActiveRecord {
@@ -30,8 +28,10 @@ class GacGlobPeriodU extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['period_type', 'period_description'], 'string'],
-            [['fiscal_year', 'initialized_flag', 'closed_flag'], 'integer'],
+            [['fiscal_year'], 'required'],
+//            [['fiscal_year'], 'unique'],
+            [['period_description'], 'string'],
+            [['fiscal_year', 'closed_flag'], 'integer'],
             [['period_start_date', 'period_end_date'], 'safe'],
         ];
     }
@@ -41,14 +41,12 @@ class GacGlobPeriodU extends \yii\db\ActiveRecord {
      */
     public function attributeLabels() {
         return [
-            'ID' => 'ID',
-            'period_type' => 'Period Type',
+            'ID' => 'ID',           
             'fiscal_year' => 'Fiscal Year',
             'period_description' => 'Period Description',
             'period_start_date' => 'Period Start Date',
-            'period_end_date' => 'Period End Date',
-            'initialized_flag' => 'Initialized Flag',
-            'closed_flag' => 'Closed Flag',
+            'period_end_date' => 'Period End Date',            
+            'closed_flag' => 'Status',
         ];
     }
 
@@ -58,7 +56,7 @@ class GacGlobPeriodU extends \yii\db\ActiveRecord {
     }
 
     public static function getPeriodDefinitionByPeriodId($id) {
-        $model = self::findOne($id);
+        $model = self::findOne(['fiscal_year' => $id]);
         if ($model) {
             return $model->period_description . ' ' . date('Y', strtotime($model->period_start_date))
                     . '/' . date('Y', strtotime($model->period_end_date))

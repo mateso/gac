@@ -9,6 +9,7 @@ use app\models\GacGfsListUSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * GacGfsListUController implements the CRUD actions for GacGfsListU model.
@@ -20,6 +21,16 @@ class GacGfsListUController extends Controller {
      */
     public function behaviors() {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'create', 'view', 'update'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@']
+                    ]
+                ]
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -62,8 +73,11 @@ class GacGfsListUController extends Controller {
     public function actionCreate() {
         $model = new GacGfsListU();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->ID]);
+        if ($model->load(Yii::$app->request->post())) {
+            $model->SubItem = substr($model->GFSTransaction, -3);
+            if($model->save){
+             return $this->redirect(['view', 'id' => $model->ID]);   
+            }
         } else {
             return $this->render('create', [
                         'model' => $model,
@@ -96,8 +110,11 @@ class GacGfsListUController extends Controller {
      * @return mixed
      */
     public function actionDelete($id) {
-        $this->findModel($id)->delete();
-
+        $model = $this->findModel($id);
+        $model->ActiveFlag = 0;
+        $model->UserModified = Yii::$app->user->identity->id;
+        $model->DateModified = $model->DateModified = Date('Y-m-d h:i:sa');
+        $model->save();
         return $this->redirect(['index']);
     }
 
@@ -121,13 +138,12 @@ class GacGfsListUController extends Controller {
         $model = GacGfsListV::findOne($id);
         return $model->GFSMCode;
     }
-    
+
     public function actionGetItemDefinitionByGfsCode($id) {
         $model = GacGfsListV::find(['ItemDefinition'])->where(['GFSMCode' => $id])->one();
         if ($model) {
             return $model->ItemDefinition;
-        }
-        else{
+        } else {
             return 'No definition provided';
         }
     }

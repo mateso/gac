@@ -30,26 +30,34 @@ use app\models\GacEntitySectorU;
                             'items' => ArrayHelper::map(GacEntitySectorU::find()->all(), 'SectorID', 'SectorDescription'),
                             'options' => [
                                 'prompt' => 'Select Sector',
+                                'onchange' => '
+                $.get("index.php?r=gac-entity-sector-u/load-entity-sub-sector-items&id=' . '"+$(this).val(), function(data){
+                $("select#gacentitylistu-subsectorid").html(data);
+                });'
                             ],
                         ],
                         'SubSectorID' => [
                             'type' => Form::INPUT_DROPDOWN_LIST,
-                            'items' => ArrayHelper::map(GacEntitySectorU::find()->all(), 'SectorID', 'SectorDescription'),
+                            'items' => [],
                             'options' => [
                                 'prompt' => 'Select Sub Sector',
                             ],
-                        ],
-                        'VoteCode' => [
-                            'type' => Form::INPUT_TEXT,
-                            'options' => ['placeholder' => 'Enter Vote Code...']
                         ],
                         'InstitutionalCode' => [
                             'type' => Form::INPUT_TEXT,
                             'options' => ['placeholder' => 'Enter Institutional Code...']
                         ],
+                        'VoteCode' => [
+                            'type' => Form::INPUT_TEXT,
+                            'options' => ['placeholder' => 'Enter Vote Code...']
+                        ],
                         'EntityCode' => [
                             'type' => Form::INPUT_TEXT,
                             'options' => ['placeholder' => 'Enter Entity Code...']
+                        ],
+                        'EntityDescription' => [
+                            'type' => Form::INPUT_TEXTAREA,
+                            'options' => ['placeholder' => 'Enter Entity Description...']
                         ],
                         'ActiveFlag' => [
                             'type' => Form::INPUT_DROPDOWN_LIST,
@@ -57,10 +65,6 @@ use app\models\GacEntitySectorU;
                             'options' => [
                                 'prompt' => 'Select Flag',
                             ],
-                        ],
-                        'EntityDescription' => [
-                            'type' => Form::INPUT_TEXTAREA,
-                            'options' => ['placeholder' => 'Enter Entity Description...']
                         ],
                     ],
                 ]);

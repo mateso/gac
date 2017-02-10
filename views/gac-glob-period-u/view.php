@@ -1,9 +1,7 @@
 <?php
 
-use yii\helpers\Html;
 use kartik\detail\DetailView;
 use kartik\datecontrol\DateControl;
-use kartik\datecontrol\Module;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\GacGlobPeriodU */
@@ -26,7 +24,6 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         'attributes' => [
             // 'ID',
-            'period_type',
             'fiscal_year',
             'period_description',
             [
@@ -47,8 +44,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     'type' => DateControl::FORMAT_DATE,
                 ],
             ],
-            'initialized_flag',
-            'closed_flag',
+            [
+                'attribute' => 'closed_flag',
+                'format' => 'raw',
+                'type' => DetailView::INPUT_DROPDOWN_LIST,
+                'items' => ['1' => 'Open', '0' => 'Closed'],
+                'value' => $model->closed_flag == 1 ? "Open" : "Closed",
+            ],
         ],
         'deleteOptions' => [
             'url' => ['delete', 'id' => $model->ID],

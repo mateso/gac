@@ -37,7 +37,9 @@ class GacGfsListU extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['Chapter', 'ActiveFlag', 'UserCreated', 'UserModified'], 'integer'],
+            [['Chapter', 'SubChapter', 'Item', 'ItemDescription', 'GFSTransaction'], 'required'],
+            [['GFSTransaction'], 'unique'],
+            [['Chapter', 'SubItem', 'ActiveFlag', 'UserCreated', 'UserModified'], 'integer'],
             [['SubChapter', 'Item', 'SubItem', 'ItemDescription', 'GFSTransaction', 'GFSHoldingGain', 'GFSVolume', 'GFSStock'], 'string'],
             [['DateCreated', 'DateModified'], 'safe'],
         ];
@@ -54,10 +56,10 @@ class GacGfsListU extends \yii\db\ActiveRecord {
             'Item' => 'Item',
             'SubItem' => 'Sub Item',
             'ItemDescription' => 'Item Description',
-            'GFSTransaction' => 'Gfstransaction',
-            'GFSHoldingGain' => 'Gfsholding Gain',
-            'GFSVolume' => 'Gfsvolume',
-            'GFSStock' => 'Gfsstock',
+            'GFSTransaction' => 'GFS Transaction',
+            'GFSHoldingGain' => 'GFS Holding Gain',
+            'GFSVolume' => 'GFS Volume',
+            'GFSStock' => 'GFS Stock',
             'ActiveFlag' => 'Active Flag',
             'DateCreated' => 'Date Created',
             'UserCreated' => 'User Created',
@@ -65,4 +67,5 @@ class GacGfsListU extends \yii\db\ActiveRecord {
             'UserModified' => 'User Modified',
         ];
     }
+
 }

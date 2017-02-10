@@ -46,5 +46,10 @@ class GacEntitySubsectorU extends \yii\db\ActiveRecord {
         $model = self::findOne($id);
         return $model->SubSectorDescription;
     }
+    
+    public static function getEntitySectorIdByEntitySubSectorId($id){
+        $model = self::findOne($id);
+        return $model->SectorID;
+    }
 
 }

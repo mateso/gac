@@ -8,6 +8,8 @@ use app\models\GacGlobPeriodUSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
+use app\models\GacDataTrxdetU;
 
 /**
  * GacGlobPeriodUController implements the CRUD actions for GacGlobPeriodU model.
@@ -19,6 +21,16 @@ class GacGlobPeriodUController extends Controller {
      */
     public function behaviors() {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'create', 'view', 'update'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@']
+                    ]
+                ]
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -66,7 +78,7 @@ class GacGlobPeriodUController extends Controller {
      * @return mixed
      */
     public function actionCreate() {
-        $model = new GacGlobPeriodU();
+        $model = new GacGlobPeriodU(['closed_flag' => 1]);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->ID]);
@@ -122,9 +134,30 @@ class GacGlobPeriodUController extends Controller {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
-    
+
     public function actionGetPeriodDefinitionByPeriodId($id) {
         return GacGlobPeriodU::getPeriodDefinitionByPeriodId($id);
+    }
+
+    public function actionCloseYear() {
+        $model = new GacGlobPeriodU();
+
+        if ($model->load(Yii::$app->request->post())) {
+            $modelFY = GacGlobPeriodU::findOne(['fiscal_year' => $model->fiscal_year]);
+            $modelFY->closed_flag = 0;
+            $modelFY->save();
+
+            GacDataTrxdetU::updateAll([
+                'ClosedFlag' => 0], [
+                'FiscalYear' => $model->fiscal_year
+            ]);
+
+            return $this->redirect(['index']);
+        } else {
+            return $this->renderAjax('modalCloseYear', [
+                        'model' => $model,
+            ]);
+        }
     }
 
 }

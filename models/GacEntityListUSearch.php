@@ -19,7 +19,7 @@ class GacEntityListUSearch extends GacEntityListU
     {
         return [
             [['ID', 'SectorID', 'SubSectorID', 'ActiveFlag', 'UserCreated', 'UserModified'], 'integer'],
-            [['InstitutionalCode', 'VoteCode', 'EntityCode', 'EntityDescription', 'TransRelation', 'DateCreated', 'DateModified', 'ContactPerson', 'ContactNumber', 'Region'], 'safe'],
+            [['InstitutionalCode', 'VoteCode', 'EntityCode', 'EntityDescription', 'DateCreated', 'DateModified', 'ContactPerson', 'ContactNumber', 'Region'], 'safe'],
         ];
     }
 
@@ -73,7 +73,6 @@ class GacEntityListUSearch extends GacEntityListU
             ->andFilterWhere(['like', 'VoteCode', $this->VoteCode])
             ->andFilterWhere(['like', 'EntityCode', $this->EntityCode])
             ->andFilterWhere(['like', 'EntityDescription', $this->EntityDescription])
-            ->andFilterWhere(['like', 'TransRelation', $this->TransRelation])
             ->andFilterWhere(['like', 'ContactPerson', $this->ContactPerson])
             ->andFilterWhere(['like', 'ContactNumber', $this->ContactNumber])
             ->andFilterWhere(['like', 'Region', $this->Region]);

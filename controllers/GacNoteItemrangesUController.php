@@ -8,6 +8,7 @@ use app\models\GacNoteItemrangesUSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * GacNoteItemrangesUController implements the CRUD actions for GacNoteItemrangesU model.
@@ -19,6 +20,16 @@ class GacNoteItemrangesUController extends Controller {
      */
     public function behaviors() {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'create', 'view', 'update'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@']
+                    ]
+                ]
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -110,8 +121,11 @@ class GacNoteItemrangesUController extends Controller {
      * @return mixed
      */
     public function actionDelete($id) {
-        $this->findModel($id)->delete();
-
+        $model = $this->findModel($id);
+        $model->ActiveFlag = 0;
+        $model->UserModified = Yii::$app->user->identity->id;
+        $model->DateModified = $model->DateModified = Date('Y-m-d h:i:sa');
+        $model->save();
         return $this->redirect(['index']);
     }
 

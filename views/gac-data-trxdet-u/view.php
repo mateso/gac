@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\GacDataTrxdetU */
@@ -18,16 +19,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 <h3 class="box-title">Transaction Number <?= Html::encode($this->title) ?></h3>
                 <p></p>
                 <p>
-                    <?= Html::a('Update', ['update', 'id' => $model->ID], ['class' => 'btn btn-primary']) ?>
-                    <?=
-                    Html::a('Delete', ['delete', 'id' => $model->ID], [
-                        'class' => 'btn btn-danger',
-                        'data' => [
-                            'confirm' => 'Are you sure you want to delete this item?',
-                            'method' => 'post',
-                        ],
-                    ])
-                    ?>
+                    <?php
+                    if ($model->ApprovedFlag != 1) {                       
+                        echo '<a href="' . Url::to(['update', 'id' => $model->ID]) . '" class = "btn btn-primary"]>Update</a> ';
+                        echo '<a href="' . Url::to(['delete', 'id' => $model->ID]) . '" class = "btn btn-danger" method = "post" onclick = "alert("Are you sure you want to delete this item?")"]>Delete</a>';
+                    }
+                    ?>   
                 </p>
             </div>
             <div class="box-body">    
@@ -64,12 +61,21 @@ $this->params['breadcrumbs'][] = $this->title;
                         //'ClassificationCode',
                         [
                             'attribute' => 'FiscalYear',
-                            'value' => $model->fiscalYear->getFiscalYearDesc($model->FiscalYear),
+                            'value' => $model->FiscalYear,
                         ],
                         //'NoteNo',
                         'ApprovedBudget',
                         'Reallocation',
-                        'Actual',
+                        [
+                            'attribute' => 'Actual',
+                            'value' => $model->ActualCr != '' ? $model->ActualCr : $model->ActualDr,
+                        ],
+                        [
+                            'attribute' => 'EliminationFlag',
+                            'label' => '',
+//                            'visible' => $model->EliminationFlag != '',
+                            'value' => $model->EliminationFlag == 1 ? 'Actual Within Govt Entity' : 'Actual Outside Govt Entity',
+                        ],
                     //'EntryDate',
                     //'EntryUser',
                     //'ApprovedFlag',

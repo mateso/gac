@@ -18,8 +18,8 @@ class GacGlobPeriodUSearch extends GacGlobPeriodU
     public function rules()
     {
         return [
-            [['ID', 'fiscal_year', 'initialized_flag', 'closed_flag'], 'integer'],
-            [['period_type', 'period_description', 'period_start_date', 'period_end_date'], 'safe'],
+            [['ID', 'fiscal_year', 'closed_flag'], 'integer'],
+            [['period_description', 'period_start_date', 'period_end_date'], 'safe'],
         ];
     }
 
@@ -62,13 +62,11 @@ class GacGlobPeriodUSearch extends GacGlobPeriodU
             'ID' => $this->ID,
             'fiscal_year' => $this->fiscal_year,
             'period_start_date' => $this->period_start_date,
-            'period_end_date' => $this->period_end_date,
-            'initialized_flag' => $this->initialized_flag,
+            'period_end_date' => $this->period_end_date,            
             'closed_flag' => $this->closed_flag,
         ]);
 
-        $query->andFilterWhere(['like', 'period_type', $this->period_type])
-            ->andFilterWhere(['like', 'period_description', $this->period_description]);
+        $query->andFilterWhere(['like', 'period_description', $this->period_description]);
 
         return $dataProvider;
     }

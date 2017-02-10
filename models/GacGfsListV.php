@@ -73,4 +73,9 @@ class GacGfsListV extends \yii\db\ActiveRecord {
         }
     }
 
+    public static function getChapterCodebyGfsmCode($id) {
+        $model = self::findOne(['GFSMCode' => $id]);
+        return $model->ChapterCode;
+    }
+
 }

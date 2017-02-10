@@ -8,6 +8,7 @@ use app\models\GacEntityListUSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * GacEntityListUController implements the CRUD actions for GacEntityListU model.
@@ -19,6 +20,16 @@ class GacEntityListUController extends Controller {
      */
     public function behaviors() {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'create', 'view', 'update'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@']
+                    ]
+                ]
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -50,7 +61,10 @@ class GacEntityListUController extends Controller {
     public function actionView($id) {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+            $model->UserModified = Yii::$app->user->identity->id;
+            $model->DateModified = $model->DateModified = Date('Y-m-d h:i:sa');
+            $model->save();
             return $this->redirect(['view', 'id' => $model->ID]);
         } else {
             return $this->render('view', [
@@ -68,7 +82,10 @@ class GacEntityListUController extends Controller {
     public function actionCreate() {
         $model = new GacEntityListU();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+            $model->UserCreated = Yii::$app->user->identity->id;
+            $model->DateCreated = $model->DateModified = Date('Y-m-d h:i:sa');
+            $model->save();
             return $this->redirect(['view', 'id' => $model->ID]);
         } else {
             return $this->render('create', [
@@ -104,6 +121,8 @@ class GacEntityListUController extends Controller {
     public function actionDelete($id) {
         $model = $this->findModel($id);
         $model->ActiveFlag = 0;
+        $model->UserModified = Yii::$app->user->identity->id;
+        $model->DateModified = $model->DateModified = Date('Y-m-d h:i:sa');
         $model->save();
 
         return $this->redirect(['index']);

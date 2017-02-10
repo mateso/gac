@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use kartik\grid\GridView;
+use yii\bootstrap\Modal;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\GacGlobPeriodUSearch */
@@ -9,6 +10,13 @@ use kartik\grid\GridView;
 
 $this->title = 'Global Periods';
 $this->params['breadcrumbs'][] = $this->title;
+
+Modal::begin([
+    'header' => '<h4>Close Year</h4>',
+    'id' => 'modalCloseYear',
+    'size' => 'modal-md'
+]);
+Modal::end();
 ?>
 <div class="gac-glob-period-u-index">
 
@@ -20,11 +28,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            // 'ID',
-            [
-                'attribute' => 'period_type',
-                'width' => '13%',
-            ],
             [
                 'attribute' => 'fiscal_year',
                 'width' => '13%',
@@ -43,8 +46,18 @@ $this->params['breadcrumbs'][] = $this->title;
                 'width' => '25%',
                 'hAlign' => 'left',
             ],
-            // 'initialized_flag',
-            // 'closed_flag',
+            [
+                'attribute' => 'closed_flag',
+                'width' => '13%',
+                'hAlign' => 'left',
+                'value' => function ($model) {
+                    if ($model->closed_flag == 0) {
+                        return 'Closed';
+                    } else {
+                        return 'Open';
+                    }
+                },
+            ],
             ['class' => 'yii\grid\ActionColumn',
                 'buttons' => [
                     'update' => function ($url, $model) {
@@ -62,9 +75,25 @@ $this->params['breadcrumbs'][] = $this->title;
                 'panel' => [
                     'heading' => '<h3 class="panel-title"><i class="glyphicon glyphicon-th-list"></i> ' . Html::encode($this->title) . ' </h3>',
                     'type' => 'info',
-                    'before' => Html::a('<i class="glyphicon glyphicon-plus"></i> Add Period', ['create'], ['class' => 'btn btn-success']), 'after' => Html::a('<i class="glyphicon glyphicon-repeat"></i> Reset List', ['index'], ['class' => 'btn btn-info']),
+                    'before' => Html::a('<i class="glyphicon glyphicon-plus"></i> Add Period', ['create'], ['class' => 'btn btn-success']),
+                    'after' => Html::button('<i class="glyphicon glyphicon-lock"></i> Close Year', ['type' => 'button', 'title' => 'Close Year', 'class' => 'btn btn-danger', 'id' => 'btnCloseYear']),
                     'showFooter' => false
                 ],
             ]);
             ?>
-</div>
+        </div>
+
+        <?php
+//        JS Handler for Financial Statement Report
+        $this->registerJs(
+                "$('#btnCloseYear').click(function() {
+    $.get(
+        'index.php?r=gac-glob-period-u/close-year',         
+        function (data) {
+            $('.modal-body').html(data);
+            $('#modalCloseYear').modal();
+        }  
+    );
+});"
+        );
+        ?>

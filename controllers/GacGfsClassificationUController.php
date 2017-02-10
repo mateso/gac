@@ -8,7 +8,7 @@ use app\models\GacGfsClassificationUSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use app\models\GacGfsItemsU;
+use yii\filters\AccessControl;
 use app\models\GacGfsSubchapterU;
 use app\models\GacGfsListV;
 
@@ -22,6 +22,16 @@ class GacGfsClassificationUController extends Controller {
      */
     public function behaviors() {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'create', 'view', 'update'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@']
+                    ]
+                ]
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [

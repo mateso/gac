@@ -1,6 +1,5 @@
 <?php
 
-use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use kartik\detail\DetailView;
 use app\models\GacEntitySectorU;
@@ -33,7 +32,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'type' => DetailView::INPUT_DROPDOWN_LIST,
                 'items' => ArrayHelper::map(GacEntitySectorU::find()->all(), 'SectorID', 'SectorDescription'),
                 'options' => [
-                    'prompt' => 'Select Sector'
+                    'prompt' => 'Select Sector',
+                    'onchange' => '
+                $.get("index.php?r=gac-entity-sector-u/load-entity-sub-sector-items&id=' . '"+$(this).val(), function(data){
+                $("select#gacentitylistu-subsectorid").html(data);
+                });'
                 ],
                 'value' => GacEntitySectorU::getSectorDescBySectorId($model->SectorID),
             ],
@@ -41,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'SubSectorID',
                 'format' => 'raw',
                 'type' => DetailView::INPUT_DROPDOWN_LIST,
-                'items' => ArrayHelper::map(GacEntitySubSectorU::find()->all(), 'SubSectorID', 'SubSectorDescription'),
+                'items' => ArrayHelper::map(GacEntitySubSectorU::find()->where(['SectorID' => $model->SectorID])->all(), 'SubSectorID', 'SubSectorDescription'),
                 'options' => [
                     'prompt' => 'Select SubSector'
                 ],
@@ -53,57 +56,26 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'EntityCode',
-//                'format' => 'raw',
-//                'type' => DetailView::INPUT_DROPDOWN_LIST,
-//                'items' => ArrayHelper::map(ContractType::find()->orderBy('desc_en')->asArray()->all(), 'contract_type_id', 'desc_en'), 'options' => ['prompt' => 'Select Contract Type'],
-//                'value' => $model->contractType->getContractTypeName($model->contract_type_id),
             ],
             [
                 'attribute' => 'EntityDescription',
 //                'type' => DETAILVIEW::INPUT_TEXTAREA,
             ],
             [
-                'attribute' => 'TransRelation',
-//                'type' => DETAILVIEW::INPUT_HTML5_INPUT,
-//                'inputType' => 'number',
-//                'options' => ['min' => 1, 'max' => 5, 'step' => 1, 'placeholder' => 'Enter Lot Number...'],
-//                'value' => $model->lot_no,
-            ],
-            [
                 'attribute' => 'ActiveFlag',
                 'format' => 'raw',
                 'type' => DetailView::INPUT_DROPDOWN_LIST,
                 'items' => ['1' => 'Active', '0' => 'Inactive'],
-                'value' => $model->ActiveFlag == 1 ? "ACTIVE" : "INACTIVE"
+                'value' => $model->ActiveFlag == 1 ? "Active" : "Inactive"
             ],
-//            'DateCreated',
-//            'UserCreated',
-//            'DateModified',
-//            'UserModified',
             [
                 'attribute' => 'ContactPerson',
-//                'format' => ['date', 'php:d-M-Y'],
-//                'type' => DetailView::INPUT_WIDGET,
-//                'widgetOptions' => [
-//                    'class' => DateControl::classname(),
-//                    'type' => DateControl::FORMAT_DATE,
-//                ],
             ],
             [
                 'attribute' => 'ContactNumber',
-//                'format' => ['date', 'php:d-M-Y'],
-//                'type' => DetailView::INPUT_WIDGET,
-//                'widgetOptions' => [
-//                    'class' => DateControl::classname(),
-//                    'type' => DateControl::FORMAT_DATE,
-//                ],
             ],
             [
                 'attribute' => 'Region',
-//                'format' => 'raw',
-//                'type' => DetailView::INPUT_DROPDOWN_LIST,
-//                'items' => ArrayHelper::map(FinancialYear::find()->orderBy('financial_year_id')->asArray()->all(), 'financial_year_id', 'desc_en'), 'options' => ['prompt' => 'Select Financial Year'],
-//                'value' => $model->financialYear->getFinancialYearName($model->financial_year_id),
             ],
         ],
         'deleteOptions' => [
