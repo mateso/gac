@@ -10,7 +10,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use app\models\GacDataStatisticSummaryVSearch;
-use app\models\GacGlobPeriodU;
+use app\models\GacApprovalStatus;
 use app\models\GacDataTrxdetU;
 use app\models\ModalConsolidationActions;
 
@@ -150,18 +150,27 @@ class GacDataTrxVController extends Controller {
                     'EntityCode' => $model->entity_code,
                     'FiscalYear' => $model->fiscal_year,
                 ]);
+                
+                GacApprovalStatus::updateApprovalStatus($model->fiscal_year, $model->entity_code, "Disapprove");
+                
             } elseif ($model->action_type == 'Post') {
                 GacDataTrxdetU::updateAll([
                     'PostedFlag' => 1, 'DatePosted' => Date('Y-m-d h:i:sa')], [
                     'EntityCode' => $model->entity_code,
                     'FiscalYear' => $model->fiscal_year,
                 ]);
+                
+                GacApprovalStatus::updateApprovalStatus($model->fiscal_year, $model->entity_code, "Post");
+                
             } else {
                 GacDataTrxdetU::updateAll([
                     'PostedFlag' => 0, 'DatePosted' => Date('Y-m-d h:i:sa')], [
                     'EntityCode' => $model->entity_code,
                     'FiscalYear' => $model->fiscal_year,
                 ]);
+                
+                GacApprovalStatus::updateApprovalStatus($model->fiscal_year, $model->entity_code, "Unpost");
+                
             }
             return $this->redirect(['index']);
         } else {

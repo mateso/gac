@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\helpers\ArrayHelper;
-use app\models\GacGlobPeriodU;
+use app\models\GacDataTrxdetU;
 use yii\bootstrap\Modal;
 use yii\helpers\Url;
 
@@ -68,7 +68,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Fiscal Year',
                 'width' => '10%',
                 'filter' => Html::activeDropDownList(
-                        $searchModel, 'FiscalYear', ArrayHelper::map(GacGlobPeriodU::find()->orderBy('ID')->asArray()->all(), 'fiscal_year', 'fiscal_year'), ['class' => 'form-control', 'prompt' => Yii::t('app', 'ALL')]
+                        $searchModel, 'FiscalYear', 
+                        ArrayHelper::map(GacDataTrxdetU::find()->select('FiscalYear')->distinct()->all(), 'FiscalYear', 'FiscalYear'), ['class' => 'form-control', 'prompt' => Yii::t('app', 'ALL')]
                 )
             ],
             [

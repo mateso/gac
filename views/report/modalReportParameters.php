@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
-use app\models\GacGlobPeriodU;
+use app\models\GacDataTrxdetU;
 use app\models\GacEntitySectorU;
 
 /* @var $this yii\web\View */
@@ -17,7 +17,7 @@ use app\models\GacEntitySectorU;
 
     <?=
     $form->field($model, 'fiscal_year')->dropDownList(
-            ArrayHelper::map(GacGlobPeriodU::find()->all(), 'fiscal_year', 'fiscal_year'), [
+            ArrayHelper::map(GacDataTrxdetU::find()->select('FiscalYear')->distinct()->all(), 'FiscalYear', 'FiscalYear'), [
         'prompt' => 'Select Fiscal Year',
     ]);
     ?> 

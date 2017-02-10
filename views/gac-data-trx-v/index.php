@@ -66,13 +66,13 @@ Modal::end();
             ],
             [
                 'attribute' => 'ApprovedFlag',
-                'label' => 'Approval',
+                'label' => 'Approved',
                 'width' => '4%',
                 'class' => 'kartik\grid\BooleanColumn',
             ],
             [
                 'attribute' => 'PostedFlag',
-                'label' => 'Post Status',
+                'label' => 'Posted',
                 'width' => '4%',
                 'class' => 'kartik\grid\BooleanColumn',
             ],

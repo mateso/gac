@@ -41,11 +41,11 @@ class GacGlobPeriodU extends \yii\db\ActiveRecord {
      */
     public function attributeLabels() {
         return [
-            'ID' => 'ID',           
+            'ID' => 'ID',
             'fiscal_year' => 'Fiscal Year',
             'period_description' => 'Period Description',
             'period_start_date' => 'Period Start Date',
-            'period_end_date' => 'Period End Date',            
+            'period_end_date' => 'Period End Date',
             'closed_flag' => 'Status',
         ];
     }
@@ -65,6 +65,13 @@ class GacGlobPeriodU extends \yii\db\ActiveRecord {
         } else {
             return 'No definition provided';
         }
+    }
+
+    public static function getUnapprovedFiscalYearPerEntityCode($entityCode) {
+        $approvedFiscalYearModel = GacApprovalStatus::find()->select('FiscalYear')->where(['ApprovedFlag' => 1, 'EntityCode' => $entityCode]);
+        $unapprovedFiscalYearModel = GacGlobPeriodU::find()->select('fiscal_year')->where(['not in', 'fiscal_year', $approvedFiscalYearModel]);
+        $model = $unapprovedFiscalYearModel->all();
+        return $model;
     }
 
 }

@@ -9,6 +9,7 @@ use yii\filters\AccessControl;
 use app\models\ModalGfsList;
 use app\models\ModalEntityList;
 use app\models\ModalReportParameters;
+use app\models\ModalEliminationEntries;
 
 class ReportController extends \yii\web\Controller {
 
@@ -35,7 +36,7 @@ class ReportController extends \yii\web\Controller {
     }
 
     public function actionFinancialPerformance() {
-        
+
         $model = new ModalReportParameters();
 
         if ($model->load(Yii::$app->request->post())) {
@@ -254,21 +255,6 @@ class ReportController extends \yii\web\Controller {
     }
 
     public function actionNotes() {
-
-//        $model = new GacGlobPeriodU();
-//
-//        if ($model->load(Yii::$app->request->post())) {
-//            $vote_code = Yii::$app->user->identity->institutional_code;
-//            $curr_fiscal_yr = $model->fiscal_year;
-//            return $this->render('notes', [
-//                        'vote_code' => $vote_code,
-//                        'curr_fiscal_yr' => $curr_fiscal_yr,
-//            ]);
-//        } else {
-//            return $this->renderAjax('modalFiscalYear', [
-//                        'model' => $model,
-//            ]);
-//        }
         $model = new ModalReportParameters();
 
         if ($model->load(Yii::$app->request->post())) {
@@ -286,12 +272,30 @@ class ReportController extends \yii\web\Controller {
         }
     }
 
+    public function actionEliminationEntries() {
+        $model = new ModalEliminationEntries();
+
+        if ($model->load(Yii::$app->request->post())) {
+            $report_type = $model->report_type;
+            $curr_fiscal_yr = $model->fiscal_year;
+
+            return $this->render('eliminationEntries', [
+                        'report_type' => $report_type,
+                        'curr_fiscal_yr' => $curr_fiscal_yr,
+            ]);
+        } else {
+            return $this->renderAjax('modalEliminationEntries', [
+                        'model' => $model,
+            ]);
+        }
+    }
+
     public function getVoteCode($model) {
         if (Yii::$app->user->can('consolidator')) {
             if ($model->vote_code == 0) {
                 $vote_code = $model->vote_code;
             } elseif ($model->vote_code == 1) {
-                $vote_code = $model->entity_sub_sector;               
+                $vote_code = $model->entity_sub_sector;
             } else {
                 $vote_code = $model->entity_list;
             }

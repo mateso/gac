@@ -174,6 +174,8 @@ LteAsset::register($this);
                             Segmented Cash Flow</a></li>
                             <li class="btnConsoStatus"><a href = "#"><i class = "fa fa-circle-o"></i>
                             Consolidation Status</a></li>
+                            <li class="btnEliminationEntries"><a href = "#"><i class = "fa fa-circle-o"></i>
+                            Elimination Entries</a></li>
                             <li class="btnEntityList"><a href = "#"><i class = "fa fa-circle-o"></i>
                             Entity List</a></li>
                             <li class="btnGFSList"><a href = "#"><i class = "fa fa-circle-o"></i>
@@ -435,6 +437,21 @@ LteAsset::register($this);
                 "$('.btnNotes').click(function() {
     $.get(
         'index.php?r=report/notes',         
+        function (data) {
+            $('.modal-body').html(data);
+            $('#modalReportParameters').modal();
+        }  
+    );
+});
+    "
+        );
+        
+                //       JS Handler for Elimination Entries Report
+        $this->registerJs(
+                "$('.btnEliminationEntries').click(function() {
+//                    alert('shjas');
+    $.get(
+        'index.php?r=report/elimination-entries',         
         function (data) {
             $('.modal-body').html(data);
             $('#modalReportParameters').modal();

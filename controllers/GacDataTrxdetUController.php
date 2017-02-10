@@ -11,6 +11,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\helpers\Json;
+use app\models\GacApprovalStatus;
 
 /**
  * GacDataTrxdetUController implements the CRUD actions for GacDataTrxdetU model.
@@ -35,7 +36,7 @@ class GacDataTrxdetUController extends Controller {
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+//                    'delete' => ['POST'],
                 ],
             ],
         ];
@@ -88,7 +89,6 @@ class GacDataTrxdetUController extends Controller {
 //                $model->ActualDr = $model->Actual;
 //                $model->EliminationFlag = 0;
 //            }
-
             //Start replacement of above commented section
             if ($chapterCode == 1) {
                 $model->ClassificationCode = 1;
@@ -174,6 +174,9 @@ class GacDataTrxdetUController extends Controller {
                 'FiscalYear' => $model->FiscalYear,
                 'EntityCode' => Yii::$app->user->identity->institutional_code
             ]);
+
+            GacApprovalStatus::updateApprovalStatus($model->FiscalYear, Yii::$app->user->identity->institutional_code, "Approve");
+
             return $this->redirect(['index']);
         } else {
             return $this->renderAjax('modalApproveRecords', [
