@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use kartik\grid\GridView;
-use app\models\GacGlobPeriodU;
+use app\models\GacDataTrxdetU;
 use yii\bootstrap\Modal;
 
 /* @var $this yii\web\View */
@@ -35,7 +35,7 @@ Modal::end();
                 'label' => 'Fiscal Year',
                 'width' => '10%',
                 'filter' => Html::activeDropDownList(
-                        $searchModel, 'FiscalYear', ArrayHelper::map(GacGlobPeriodU::find()->orderBy('ID')->asArray()->all(), 'fiscal_year', 'fiscal_year'), ['class' => 'form-control', 'prompt' => Yii::t('app', 'ALL')]
+                        $searchModel, 'FiscalYear', ArrayHelper::map(GacDataTrxdetU::find()->select(['FiscalYear', 'IsVoided'])->distinct()->all(), 'FiscalYear', 'FiscalYear'), ['class' => 'form-control', 'prompt' => Yii::t('app', 'ALL')]
                 )
             ],
             [

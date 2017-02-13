@@ -2,9 +2,10 @@
 
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
+use app\models\GacGlobPeriodU;
 use yii\widgets\ActiveForm;
 use app\models\GacGfsSubchapterU;
-use app\models\GacGlobPeriodU;
+use app\models\GacApprovalStatus;
 use app\models\GacGfsListV;
 use app\models\GacGfsClassificationU;
 
@@ -55,7 +56,7 @@ use app\models\GacGfsClassificationU;
 
                             <?=
                             $form->field($model, 'FiscalYear')->dropDownList(
-                                    ArrayHelper::map(GacGlobPeriodU::find()->all(), 'fiscal_year', 'fiscal_year'), [
+                                    ArrayHelper::map(GacGlobPeriodU::find()->select('fiscal_year')->distinct()->where(['not in', 'fiscal_year', GacApprovalStatus::getApprovedFiscalYearPerEntityCode()])->all(), 'fiscal_year', 'fiscal_year'), [
                                 'prompt' => 'Select Fiscal Year',
                                 'onchange' => '
                 $("label#lblItemDefinition").html("Fiscal Year Definition");                          
@@ -220,7 +221,7 @@ use app\models\GacGfsClassificationU;
                             <?=
                             $form->field($model, 'EliminationFlag')->radioList([
                                 1 => 'Actual Within Govt Entity',
-                                0 => 'Actual Outside Govt Entity',                              
+                                0 => 'Actual Outside Govt Entity',
                             ])->label(FALSE)
                             ?>
 

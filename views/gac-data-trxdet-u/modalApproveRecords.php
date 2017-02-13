@@ -10,8 +10,6 @@ use app\models\GacApprovalStatus;
 /* @var $model app\models\GacDataTrxdetU */
 /* @var $form yii\widgets\ActiveForm */
 
-$approvedYearModel = GacApprovalStatus::find()->where(['ApprovedFlag' => 1, 'EntityCode' => Yii::$app->user->identity->institutional_code])->all();
-$sql = 'SELECT fiscal_year FROM gac_glob_period_u WHERE fiscal_year NOT IN(SELECT FiscalYear FROM gac_approval_status)';
 ?>
 
 <div class="gac-data-trxdet-u-form">
@@ -20,7 +18,7 @@ $sql = 'SELECT fiscal_year FROM gac_glob_period_u WHERE fiscal_year NOT IN(SELEC
 
     <?=
     $form->field($model, 'FiscalYear')->dropDownList(
-            ArrayHelper::map(GacDataTrxdetU::find()->select('FiscalYear')->distinct()->all(), 'FiscalYear', 'FiscalYear'), [
+            ArrayHelper::map(GacDataTrxdetU::find()->select('FiscalYear')->distinct()->where(['not in', 'FiscalYear', GacApprovalStatus::getApprovedFiscalYearPerEntityCode()])->all(), 'FiscalYear', 'FiscalYear'), [
         'prompt' => 'Select Fiscal Year',
     ]);
     ?>                                               

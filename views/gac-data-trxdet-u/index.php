@@ -68,8 +68,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Fiscal Year',
                 'width' => '10%',
                 'filter' => Html::activeDropDownList(
-                        $searchModel, 'FiscalYear', 
-                        ArrayHelper::map(GacDataTrxdetU::find()->select('FiscalYear')->distinct()->all(), 'FiscalYear', 'FiscalYear'), ['class' => 'form-control', 'prompt' => Yii::t('app', 'ALL')]
+                        $searchModel, 'FiscalYear', ArrayHelper::map(GacDataTrxdetU::find()->select(['FiscalYear', 'IsVoided'])->distinct()->where(['IsVoided' => 0])->all(), 'FiscalYear', 'FiscalYear'), ['class' => 'form-control', 'prompt' => Yii::t('app', 'ALL')]
                 )
             ],
             [

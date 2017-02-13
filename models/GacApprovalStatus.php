@@ -74,5 +74,10 @@ class GacApprovalStatus extends \yii\db\ActiveRecord {
             $model->save();
         }
     }
+    
+    public static function getApprovedFiscalYearPerEntityCode(){
+        $model = GacApprovalStatus::find()->select('FiscalYear AS fiscal_year')->where(['ApprovedFlag' => 1, 'EntityCode' => Yii::$app->user->identity->institutional_code]);        
+        return $model;
+    }
 
 }

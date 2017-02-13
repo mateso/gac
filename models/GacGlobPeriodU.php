@@ -66,12 +66,4 @@ class GacGlobPeriodU extends \yii\db\ActiveRecord {
             return 'No definition provided';
         }
     }
-
-    public static function getUnapprovedFiscalYearPerEntityCode($entityCode) {
-        $approvedFiscalYearModel = GacApprovalStatus::find()->select('FiscalYear')->where(['ApprovedFlag' => 1, 'EntityCode' => $entityCode]);
-        $unapprovedFiscalYearModel = GacGlobPeriodU::find()->select('fiscal_year')->where(['not in', 'fiscal_year', $approvedFiscalYearModel]);
-        $model = $unapprovedFiscalYearModel->all();
-        return $model;
-    }
-
 }
